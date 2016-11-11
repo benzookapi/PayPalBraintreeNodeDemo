@@ -1,0 +1,58 @@
+div#paypal.
+  <script src="https://js.braintreegateway.com/web/3.5.0/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.5.0/js/paypal.min.js"></script>
+
+  <script src="https://www.paypalobjects.com/api/button.js?"
+     data-merchant="braintree"
+     data-id="paypal-button"
+     data-button="checkout"
+     data-color="gold"
+     data-size="medium"
+     data-shape="pill"
+     data-button_type="submit"
+     data-button_disabled="false"
+     data-locale="ja_JP"
+  ></script>
+
+
+  <script>
+  var paypalButton = document.getElementById('paypal-button');
+
+  // Create a Client component
+  braintree.client.create({
+    authorization: '#{clientToken}'
+  }, function (clientErr, clientInstance) {
+    // Create PayPal component
+    braintree.paypal.create({
+      client: clientInstance
+    }, function (err, paypalInstance) {
+      paypalButton.addEventListener('click', function () {
+      // Tokenize here!
+      paypalInstance.tokenize({
+        flow: 'checkout', // Required
+        amount: 1000, // Required
+        currency: 'JPY', // Required
+        locale: 'ja_JP'
+        }, function (err, tokenizationPayload) {
+          // Tokenization complete
+          // Send tokenizationPayload.nonce to server
+          var form = document.createElement('form');
+          document.body.appendChild(form);
+          var inputNonce = document.createElement('input');
+          inputNonce.setAttribute('type', 'hidden');
+          inputNonce.setAttribute('name', 'payment_method_nonce');
+          inputNonce.setAttribute('value', tokenizationPayload.nonce);
+          form.appendChild(inputNonce);
+          var inputAmount = document.createElement('input');
+          inputAmount.setAttribute('type', 'hidden');
+          inputAmount.setAttribute('name', 'amount');
+          inputAmount.setAttribute('value', '1000');
+          form.appendChild(inputAmount);
+          form.setAttribute('action', '/checkout');
+          form.setAttribute('method', 'post');
+          form.submit();
+        });
+      });
+    });
+  });
+  </script>
