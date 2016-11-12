@@ -1,6 +1,8 @@
 div#paypal.
   <script src="https://js.braintreegateway.com/web/3.5.0/js/client.min.js"></script>
   <script src="https://js.braintreegateway.com/web/3.5.0/js/paypal.min.js"></script>
+  <!-- For vault -->
+  <script src="https://js.braintreegateway.com/web/3.3.0/js/data-collector.min.js"></script>
 
   <script src="https://www.paypalobjects.com/api/button.js?"
      data-merchant="braintree"
@@ -22,6 +24,26 @@ div#paypal.
   braintree.client.create({
     authorization: '#{clientToken}'
   }, function (clientErr, clientInstance) {
+
+      // Get Device data for Vault
+      var myDeviceData = '';
+
+      braintree.dataCollector.create({
+        client: clientInstance,
+        paypal: true
+      }, function (err, dataCollectorInstance) {
+      if (err) {
+        // Handle error
+        return;
+      }
+      // At this point, you should access the dataCollectorInstance.deviceData value and provide it
+      // to your server, e.g. by injecting it into your form as a hidden input.
+      myDeviceData = dataCollectorInstance.deviceData;
+
+      dataCollectorInstance.teardown();
+    });
+
+
     // Create PayPal component
     braintree.paypal.create({
       client: clientInstance
@@ -29,7 +51,7 @@ div#paypal.
       paypalButton.addEventListener('click', function () {
       // Tokenize here!
       paypalInstance.tokenize({
-        flow: 'checkout', // Required
+        flow: 'vault', // Required
         amount: 1000, // Required
         currency: 'JPY', // Required
         locale: 'ja_JP'
@@ -50,8 +72,14 @@ div#paypal.
           inputAmount.setAttribute('name', 'amount');
           inputAmount.setAttribute('value', '1000');
           form.appendChild(inputAmount);
-          
-          form.setAttribute('action', '/checkout');
+
+          var inputDevice = document.createElement('input');
+          inputDevice.setAttribute('type', 'hidden');
+          inputDevice.setAttribute('name', 'device');
+          inputDevice.setAttribute('value', myDeviceData);
+          form.appendChild(inputDevice);
+
+          form.setAttribute('action', '/checkoutVault');
           form.setAttribute('method', 'post');
           form.submit();
         });
