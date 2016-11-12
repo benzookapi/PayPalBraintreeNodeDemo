@@ -101,4 +101,45 @@ router.post("/vaultSale", function (req, res) {
   });
 });
 
+/*------ For Hosted Field ------*/
+
+router.get('/hosted', function(req, res, next) {
+  var gateway = braintree.connect({
+    environment: braintree.Environment.Sandbox,
+    merchantId: "sqhrsttx42vpt63j",
+    publicKey: "xwztjydf2g7zkdsw",
+    privateKey: "532d0a43a6ca6796b77d824ea60f88e0"
+  });
+  gateway.clientToken.generate({}, function (err, response) {
+    res.render('hosted', { clientToken: response.clientToken });
+  });
+});
+
+router.post("/checkoutHosted", function (req, res) {
+  // Use payment method nonce here
+  var gateway = braintree.connect({
+    environment: braintree.Environment.Sandbox,
+    merchantId: "sqhrsttx42vpt63j",
+    publicKey: "xwztjydf2g7zkdsw",
+    privateKey: "532d0a43a6ca6796b77d824ea60f88e0"
+  });
+  console.log("%s %s", req.body.amount, req.body.payment_method_nonce)
+  var saleRequest = {
+    amount: req.body.amount,
+    paymentMethodNonce: "" + req.body.payment_method_nonce,
+    options: {
+      submitForSettlement: true
+    }
+  };
+  gateway.transaction.sale(saleRequest, function (err, result) {
+    if (err) {
+      res.send("<h1>Error:  " + err + "</h1>");
+    } else if (result.success) {
+      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1>");
+    } else {
+      res.send("<h1>Error:  " + result.message + "</h1>");
+    }
+  });
+});
+
 module.exports = router;
