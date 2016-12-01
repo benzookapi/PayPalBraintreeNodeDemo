@@ -1,92 +1,188 @@
 div#paypal.
-  <form id="checkout-form" action="/checkoutHosted" method="post">
-   <div id="error-message"></div>
+  <div class="demo-frame">
+   <form action="/checkoutHosted" method="post" id="cardForm" >
+     <label class="hosted-fields--label" for="card-number">Input Card Number for benzookapi</label>
+     <div id="card-number" class="hosted-field"></div>
 
-   <label for="card-number">Card Number</label><div class="hosted-field" id="card-number"></div>
+     <label class="hosted-fields--label" for="expiration-date">Input Expiration Date for benzookapi</label>
+     <div id="expiration-date" class="hosted-field"></div>
 
-   <label for="cvv">CVV</label><div class="hosted-field" id="cvv"></div>
+     <label class="hosted-fields--label" for="cvv">Input CVV for benzookapi</label>
+     <div id="cvv" class="hosted-field"></div>
 
-   <label for="expiration-date">Expiration Date</label><div class="hosted-field" id="expiration-date"></div>
+    <div class="button-container">
+      <input type="submit" class="button button--small button--green" value="Pay benzookapi in my own form!"/>
+    </div>
+    <input type="hidden" name="payment_method_nonce">
+    <input type="hidden" name="amount" value="100">
+   </form>
+  <div>
 
-   <input type="hidden" name="payment_method_nonce">
-   <input type="hidden" name="amount" value="100">
-   <input type="submit" value="Pay 100 USD" disabled>
-  </form>
+  <br/>
+  <br/><a href="/">Try Checkout</a>
+  <br/>
+  <br/><a href="/vault">Try Vault</a>
 
-  <!-- Load the Client component. -->
-  <script src="https://js.braintreegateway.com/web/3.5.0/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.6.0/js/client.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.6.0/js/hosted-fields.js"></script>
 
-  <!-- Load the Hosted Fields component. -->
-  <script src="https://js.braintreegateway.com/web/3.5.0/js/hosted-fields.min.js"></script>
-
-  <script>
-    // We generated a client token for you so you can test out this code
-    // immediately. In a production-ready integration, you will need to
-    // generate a client token on your server (see section below).
-    //var authorization = 'eyJ2ZXJzaW9uIjoyLCJhdXRob3JpemF0aW9uRmluZ2VycHJpbnQiOiIyMzkzMzE0NDE5MDMzOTdkZjY2MmFkZjc4NDgwNGFiZDE3MWM2OGRhNTMxODVlZGRhZjQyODExZWRmZTYxNWE4fGNyZWF0ZWRfYXQ9MjAxNi0xMS0xMlQwMjozMTo1Mi4wMTc1MjA5NjQrMDAwMFx1MDAyNm1lcmNoYW50X2lkPTM0OHBrOWNnZjNiZ3l3MmJcdTAwMjZwdWJsaWNfa2V5PTJuMjQ3ZHY4OWJxOXZtcHIiLCJjb25maWdVcmwiOiJodHRwczovL2FwaS5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tOjQ0My9tZXJjaGFudHMvMzQ4cGs5Y2dmM2JneXcyYi9jbGllbnRfYXBpL3YxL2NvbmZpZ3VyYXRpb24iLCJjaGFsbGVuZ2VzIjpbXSwiZW52aXJvbm1lbnQiOiJzYW5kYm94IiwiY2xpZW50QXBpVXJsIjoiaHR0cHM6Ly9hcGkuc2FuZGJveC5icmFpbnRyZWVnYXRld2F5LmNvbTo0NDMvbWVyY2hhbnRzLzM0OHBrOWNnZjNiZ3l3MmIvY2xpZW50X2FwaSIsImFzc2V0c1VybCI6Imh0dHBzOi8vYXNzZXRzLmJyYWludHJlZWdhdGV3YXkuY29tIiwiYXV0aFVybCI6Imh0dHBzOi8vYXV0aC52ZW5tby5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tIiwiYW5hbHl0aWNzIjp7InVybCI6Imh0dHBzOi8vY2xpZW50LWFuYWx5dGljcy5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tLzM0OHBrOWNnZjNiZ3l3MmIifSwidGhyZWVEU2VjdXJlRW5hYmxlZCI6dHJ1ZSwicGF5cGFsRW5hYmxlZCI6dHJ1ZSwicGF5cGFsIjp7ImRpc3BsYXlOYW1lIjoiQWNtZSBXaWRnZXRzLCBMdGQuIChTYW5kYm94KSIsImNsaWVudElkIjpudWxsLCJwcml2YWN5VXJsIjoiaHR0cDovL2V4YW1wbGUuY29tL3BwIiwidXNlckFncmVlbWVudFVybCI6Imh0dHA6Ly9leGFtcGxlLmNvbS90b3MiLCJiYXNlVXJsIjoiaHR0cHM6Ly9hc3NldHMuYnJhaW50cmVlZ2F0ZXdheS5jb20iLCJhc3NldHNVcmwiOiJodHRwczovL2NoZWNrb3V0LnBheXBhbC5jb20iLCJkaXJlY3RCYXNlVXJsIjpudWxsLCJhbGxvd0h0dHAiOnRydWUsImVudmlyb25tZW50Tm9OZXR3b3JrIjp0cnVlLCJlbnZpcm9ubWVudCI6Im9mZmxpbmUiLCJ1bnZldHRlZE1lcmNoYW50IjpmYWxzZSwiYnJhaW50cmVlQ2xpZW50SWQiOiJtYXN0ZXJjbGllbnQzIiwiYmlsbGluZ0FncmVlbWVudHNFbmFibGVkIjp0cnVlLCJtZXJjaGFudEFjY291bnRJZCI6ImFjbWV3aWRnZXRzbHRkc2FuZGJveCIsImN1cnJlbmN5SXNvQ29kZSI6IlVTRCJ9LCJjb2luYmFzZUVuYWJsZWQiOmZhbHNlLCJtZXJjaGFudElkIjoiMzQ4cGs5Y2dmM2JneXcyYiIsInZlbm1vIjoib2ZmIn0=';
-    var form = document.querySelector('#checkout-form');
-    var submit = document.querySelector('input[type="submit"]');
-
-    braintree.client.create({
-      authorization: '#{clientToken}'
-      }, function (clientErr, clientInstance) {
-         if (clientErr) {
-          // Handle error in client creation
-          return;
+  <style>
+    .hosted-field {
+      height: 50px;
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      display: inline-block;
+      box-shadow: none;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #dddddd;
+      line-height: 20px;
+      background: #fcfcfc;
+      margin-bottom: 12px;
+      background: linear-gradient(to right, white 50%, #fcfcfc 50%);
+      background-size: 200% 100%;
+      background-position: right bottom;
+      transition: all 300ms ease-in-out;
     }
 
+    .hosted-fields--label {
+      font-family: courier, monospace;
+      text-transform: uppercase;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .button-container {
+      display: block;
+      text-align: center;
+    }
+
+    .button {
+     cursor: pointer;
+     font-weight: 500;
+     line-height: inherit;
+     position: relative;
+     text-decoration: none;
+     text-align: center;
+     border-style: solid;
+     border-width: 1px;
+     border-radius: 3px;
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     display: inline-block;
+    }
+
+    .button--small {
+      padding: 10px 20px;
+      font-size: 0.875rem;
+    }
+
+    .button--green {
+      outline: none;
+      background-color: #64d18a;
+      border-color: #64d18a;
+      color: white;
+      transition: all 200ms ease;
+    }
+
+    .button--green:hover {
+       background-color: #8bdda8;
+       color: white;
+    }
+
+    .braintree-hosted-fields-focused {
+       border: 1px solid #64d18a;
+       border-radius: 1px;
+       background-position: left bottom;
+    }
+
+    .braintree-hosted-fields-invalid {
+       border: 1px solid #ed574a;
+    }
+
+    .braintree-hosted-fields-valid {
+    }
+
+    #cardForm {
+      max-width: 50.75em;
+      margin: 0 auto;
+      padding: 1.875em;
+    }
+  </style>
+
+  <script>
+   var form = document.querySelector('#cardForm');
+   var submit = document.querySelector('input[type="submit"]');
+   //var authorization = 'sandbox_g42y39zw_348pk9cgf3bgyw2b';
+
+   braintree.client.create({
+     authorization: '#{clientToken}'
+   }, function(err, clientInstance) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    createHostedFields(clientInstance);
+   });
+
+  function createHostedFields(clientInstance) {
     braintree.hostedFields.create({
       client: clientInstance,
       styles: {
         'input': {
-         'font-size': '14pt'
+          'font-size': '16px',
+          'font-family': 'courier, monospace',
+          'font-weight': 'lighter',
+          'color': '#ccc'
         },
-        'input.invalid': {
-        'color': 'red'
+        ':focus': {
+          'color': 'black'
         },
-        'input.valid': {
-        'color': 'green'
+        '.valid': {
+          'color': '#8bdda8'
         }
       },
       fields: {
-       number: {
-       selector: '#card-number',
-       placeholder: '4111 1111 1111 1111'
-      },
-      cvv: {
-       selector: '#cvv',
-       placeholder: '123'
-      },
-      expirationDate: {
-        selector: '#expiration-date',
-        placeholder: '10/2019'
+        number: {
+          selector: '#card-number',
+          placeholder: '4111 1111 1111 1111'
+        },
+        cvv: {
+          selector: '#cvv',
+          placeholder: '123'
+        },
+        expirationDate: {
+          selector: '#expiration-date',
+          placeholder: 'MM/YYYY'
+        }
       }
-     }
     }, function (hostedFieldsErr, hostedFieldsInstance) {
-       if (hostedFieldsErr) {
-        // Handle error in Hosted Fields creation
-        return;
-      }
+    if (hostedFieldsErr) {
+     // Handle error in Hosted Fields creation
+     return;
+   }
 
-      submit.removeAttribute('disabled');
+   submit.removeAttribute('disabled');
 
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
+   form.addEventListener('submit', function (event) {
+     event.preventDefault();
 
-        hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
-          if (tokenizeErr) {
-            // Handle error in Hosted Fields tokenization
-            return;
-          }
+     hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
+       if (tokenizeErr) {
+         // Handle error in Hosted Fields tokenization
+         return;
+       }
 
-          // Put `payload.nonce` into the `payment-method-nonce` input, and then
-          // submit the form. Alternatively, you could send the nonce to your server
-          // with AJAX.
-          document.querySelector('input[name="payment_method_nonce"]').value = payload.nonce;
-          form.submit();
-        });
-       }, false);
-
+       // Put `payload.nonce` into the `payment-method-nonce` input, and then
+       // submit the form. Alternatively, you could send the nonce to your server
+       // with AJAX.
+       document.querySelector('input[name="payment_method_nonce"]').value = payload.nonce;
+       form.submit();
+     });
+    }, false);
     });
-   });
+  }
   </script>

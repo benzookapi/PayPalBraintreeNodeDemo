@@ -14,6 +14,10 @@ div#paypal.
      data-locale="ja_JP"
   ></script>
 
+  <br/>
+  <br/><a href="/vault">Try Vault</a>
+  <br/>
+  <br/><a href="/hosted">Try Hosted Field</a>
 
   <script>
   var paypalButton = document.getElementById('paypal-button');
@@ -50,7 +54,7 @@ div#paypal.
           inputAmount.setAttribute('name', 'amount');
           inputAmount.setAttribute('value', '1000');
           form.appendChild(inputAmount);
-          
+
           form.setAttribute('action', '/checkout');
           form.setAttribute('method', 'post');
           form.submit();

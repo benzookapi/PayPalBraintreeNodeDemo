@@ -133,11 +133,11 @@ router.post("/checkoutHosted", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1>");
+      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/hosted\">Try again</a>");
     } else if (result.success) {
-      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1>");
+      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/><a href=\"/hosted\">Try again</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/hosted\">Try again</a>");
     }
   });
 });
