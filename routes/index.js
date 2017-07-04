@@ -27,11 +27,11 @@ router.post("/checkout", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1>");
+      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
-      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1>");
+      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
     }
   });
 });
@@ -56,7 +56,7 @@ router.post("/checkoutVault", function (req, res) {
     amount: req.body.amount,
     merchantAccountId: "JPY",
     paymentMethodNonce: "" + req.body.payment_method_nonce,
-    deviceData: req.body.device,
+    //deviceData: req.body.device,
     options: {
       submitForSettlement: true,
       storeInVaultOnSuccess: true // For Vault
@@ -64,17 +64,21 @@ router.post("/checkoutVault", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1>");
+      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
-      res.send("<h1>Success! Transaction ID: " + result.transaction.id + " Customer ID: " + result.transaction.customer.id + "</h1>");
+      res.send("<h1>Success! Transaction ID: " + result.transaction.id + " Customer ID: " + result.transaction.customer.id + "</h1><br/>" +
+        JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
+        "<br/><br/><a href=\"/\">Try again</a>" +
+        "<br/><br/><a href=\"/vault_sale?customerId=" + result.transaction.customer.id + "\">Try Vault Sale</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
     }
   });
 });
 
 router.get('/vault_sale', function(req, res, next) {
-  res.render('vault_sale');
+  var amount = "" + (new Date().getMonth()+1) + "00" + new Date().getDate();
+  res.render('vault_sale', { amount: amount, customerId: req.query.customerId });
 });
 
 router.post("/vaultSale", function (req, res) {
@@ -92,11 +96,14 @@ router.post("/vaultSale", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1>");
+      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
-      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1>");
+      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
+        JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
+        "<br/><br/><a href=\"/vault_sale?customerId=" + req.body.customerId + "\">Try Vault Sale</a>" + 
+        "<br/><br/><a href=\"/\">Try again</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
     }
   });
 });
@@ -133,11 +140,11 @@ router.post("/checkoutHosted", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/hosted\">Try again</a>");
+      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
-      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/><a href=\"/hosted\">Try again</a>");
+      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/hosted\">Try again</a>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
     }
   });
 });

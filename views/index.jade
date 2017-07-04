@@ -1,8 +1,9 @@
 div#paypal.
-  <script src="https://js.braintreegateway.com/web/3.5.0/js/client.min.js"></script>
-  <script src="https://js.braintreegateway.com/web/3.5.0/js/paypal.min.js"></script>
+  <!--
+    <script src="https://js.braintreegateway.com/web/3.5.0/js/client.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.5.0/js/paypal.min.js"></script>
 
-  <script src="https://www.paypalobjects.com/api/button.js?"
+    <script src="https://www.paypalobjects.com/api/button.js?"
      data-merchant="braintree"
      data-id="paypal-button"
      data-button="checkout"
@@ -12,54 +13,181 @@ div#paypal.
      data-button_type="submit"
      data-button_disabled="false"
      data-locale="ja_JP"
-  ></script>
+    ></script>
+
+    <script>
+    var paypalButton = document.getElementById('paypal-button');
+
+    // Create a Client component
+    braintree.client.create({
+      authorization: '#{clientToken}'
+    }, function (clientErr, clientInstance) {
+      // Create PayPal component
+      braintree.paypal.create({
+        client: clientInstance
+      }, function (err, paypalInstance) {
+        paypalButton.addEventListener('click', function () {
+        // Tokenize here!
+        paypalInstance.tokenize({
+          flow: 'checkout', // Required
+          amount: 1000, // Required
+          currency: 'JPY', // Required
+          locale: 'ja_JP'
+          }, function (err, tokenizationPayload) {
+            // Tokenization complete
+            // Send tokenizationPayload.nonce to server
+            var form = document.createElement('form');
+            document.body.appendChild(form);
+
+            var inputNonce = document.createElement('input');
+            inputNonce.setAttribute('type', 'hidden');
+            inputNonce.setAttribute('name', 'payment_method_nonce');
+            inputNonce.setAttribute('value', tokenizationPayload.nonce);
+            form.appendChild(inputNonce);
+
+            var inputAmount = document.createElement('input');
+            inputAmount.setAttribute('type', 'hidden');
+            inputAmount.setAttribute('name', 'amount');
+            inputAmount.setAttribute('value', '1000');
+            form.appendChild(inputAmount);
+
+            form.setAttribute('action', '/checkout');
+            form.setAttribute('method', 'post');
+            form.submit();
+          });
+        });
+      });
+    });
+    </script>
+  -->
+
+  <a href="https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/" target="_blank">
+   See the doc
+  </a>
+
+  <h3>Client-side REST</h3>
+  <div id="paypal-button"></div>
+
+  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+  <script>
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'production'
+
+        client: {
+            sandbox:    'Acz3G7kG9afqvZF7PJNw-hZvw_F9INQPnZGnSVbclnydHjpK53GxFkW67Wf76FbR8ZzbW_RB3Rznnckq',
+            production: 'xxxx'
+        },
+
+        locale: 'ja_JP',
+
+        style: {
+            size: 'medium',
+            color: 'gold',
+            shape: 'pill',
+            label: 'checkout'
+        },
+
+        commit: true, // Show a 'Pay Now' button
+
+        payment: function(data, actions) {
+            return actions.payment.create({
+                payment: {
+                    transactions: [
+                        {
+                            amount: { total: '1000', currency: 'JPY' }
+                        }
+                    ]
+                }
+            });
+        },
+
+        onAuthorize: function(data, actions) {
+            return actions.payment.execute().then(function(payment) {
+
+                // The payment is complete!
+                // You can now show a confirmation message to the customer
+                alert(JSON.stringify(payment));
+            });
+        }
+
+    }, '#paypal-button');
+  </script>
+
+
+  <h3>Braintree SDK</h3>
+
+  <div id="paypal-button-container"></div>
+
+  <script src="https://js.braintreegateway.com/web/3.19.0/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.19.0/js/paypal-checkout.min.js"></script>
+
+  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+  <script>
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'production'
+
+        locale: 'ja_JP',
+
+        style: {
+            size: 'medium',
+            color: 'gold',
+            shape: 'pill',
+            label: 'checkout'
+        },
+
+        commit: true, // Show a 'Pay Now' button
+
+        braintree: braintree,
+
+        client: {
+            sandbox:    '#{clientToken}',
+            production: 'xxxxx'
+        },
+
+        payment: function(actions) {
+            return actions.braintree.create({
+                flow:     'checkout',
+                amount:   '2000',
+                currency: 'JPY',
+                intent:   'sale'
+            });
+        },
+
+        onAuthorize: function(data) {
+
+            // Submit `data.nonce` to your server
+
+            var form = document.createElement('form');
+            document.body.appendChild(form);
+
+            var inputNonce = document.createElement('input');
+            inputNonce.setAttribute('type', 'hidden');
+            inputNonce.setAttribute('name', 'payment_method_nonce');
+            inputNonce.setAttribute('value', data.nonce);
+            form.appendChild(inputNonce);
+
+            var inputAmount = document.createElement('input');
+            inputAmount.setAttribute('type', 'hidden');
+            inputAmount.setAttribute('name', 'amount');
+            inputAmount.setAttribute('value', '2000');
+            form.appendChild(inputAmount);
+
+            form.setAttribute('action', '/checkout');
+            form.setAttribute('method', 'post');
+            form.submit();
+        }
+
+    }, '#paypal-button-container');
+  </script>
+
+
+
 
   <br/>
   <br/><a href="/vault">Try Vault</a>
   <br/>
   <br/><a href="/hosted">Try Hosted Field</a>
-
-  <script>
-  var paypalButton = document.getElementById('paypal-button');
-
-  // Create a Client component
-  braintree.client.create({
-    authorization: '#{clientToken}'
-  }, function (clientErr, clientInstance) {
-    // Create PayPal component
-    braintree.paypal.create({
-      client: clientInstance
-    }, function (err, paypalInstance) {
-      paypalButton.addEventListener('click', function () {
-      // Tokenize here!
-      paypalInstance.tokenize({
-        flow: 'checkout', // Required
-        amount: 1000, // Required
-        currency: 'JPY', // Required
-        locale: 'ja_JP'
-        }, function (err, tokenizationPayload) {
-          // Tokenization complete
-          // Send tokenizationPayload.nonce to server
-          var form = document.createElement('form');
-          document.body.appendChild(form);
-
-          var inputNonce = document.createElement('input');
-          inputNonce.setAttribute('type', 'hidden');
-          inputNonce.setAttribute('name', 'payment_method_nonce');
-          inputNonce.setAttribute('value', tokenizationPayload.nonce);
-          form.appendChild(inputNonce);
-
-          var inputAmount = document.createElement('input');
-          inputAmount.setAttribute('type', 'hidden');
-          inputAmount.setAttribute('name', 'amount');
-          inputAmount.setAttribute('value', '1000');
-          form.appendChild(inputAmount);
-
-          form.setAttribute('action', '/checkout');
-          form.setAttribute('method', 'post');
-          form.submit();
-        });
-      });
-    });
-  });
-  </script>

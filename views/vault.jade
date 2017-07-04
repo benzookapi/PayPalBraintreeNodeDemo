@@ -1,7 +1,7 @@
 div#paypal.
+  <!--
   <script src="https://js.braintreegateway.com/web/3.5.0/js/client.min.js"></script>
   <script src="https://js.braintreegateway.com/web/3.5.0/js/paypal.min.js"></script>
-  <!-- For vault -->
   <script src="https://js.braintreegateway.com/web/3.3.0/js/data-collector.min.js"></script>
 
   <script src="https://www.paypalobjects.com/api/button.js?"
@@ -15,12 +15,6 @@ div#paypal.
      data-button_disabled="false"
      data-locale="ja_JP"
   ></script>
-
-  <br/>
-  <br/><a href="/">Try Checkout</a>
-  <br/>
-  <br/><a href="/hosted">Try Hosted Field</a>
-
 
   <script>
   var paypalButton = document.getElementById('paypal-button');
@@ -92,3 +86,77 @@ div#paypal.
     });
   });
   </script>
+  -->
+
+  <h3>Braintree SDK</h3>
+
+  <div id="paypal-button-container"></div>
+
+  <script src="https://js.braintreegateway.com/web/3.19.0/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.19.0/js/paypal-checkout.min.js"></script>
+
+  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+  <script>
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'production'
+
+        locale: 'ja_JP',
+
+        style: {
+            size: 'medium',
+            color: 'gold',
+            shape: 'pill',
+            label: 'checkout'
+        },
+
+        commit: true, // Show a 'Pay Now' button
+
+        braintree: braintree,
+
+        client: {
+            sandbox:    '#{clientToken}',
+            production: 'xxxxx'
+        },
+
+        payment: function(actions) {
+            return actions.braintree.create({
+                flow:     'vault',
+                amount:   '3000',
+                currency: 'JPY',
+                intent:   'sale'
+            });
+        },
+
+        onAuthorize: function(data) {
+
+            // Submit `data.nonce` to your server
+
+            var form = document.createElement('form');
+            document.body.appendChild(form);
+
+            var inputNonce = document.createElement('input');
+            inputNonce.setAttribute('type', 'hidden');
+            inputNonce.setAttribute('name', 'payment_method_nonce');
+            inputNonce.setAttribute('value', data.nonce);
+            form.appendChild(inputNonce);
+
+            var inputAmount = document.createElement('input');
+            inputAmount.setAttribute('type', 'hidden');
+            inputAmount.setAttribute('name', 'amount');
+            inputAmount.setAttribute('value', '3000');
+            form.appendChild(inputAmount);
+
+            form.setAttribute('action', '/checkoutVault');
+            form.setAttribute('method', 'post');
+            form.submit();
+        }
+
+    }, '#paypal-button-container');
+  </script>
+
+  <br/>
+  <br/><a href="/">Try Checkout</a>
+  <br/>
+  <br/><a href="/hosted">Try Hosted Field</a>
