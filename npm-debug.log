@@ -1,0 +1,21 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/jokamura/.nvm/versions/node/v0.12.7/bin/node',
+1 verbose cli   '/Users/jokamura/.nvm/versions/node/v0.12.7/bin/npm',
+1 verbose cli   'start' ]
+2 info using npm@2.11.3
+3 info using node@v0.12.7
+4 verbose config Skipping project config: /Users/jokamura/.npmrc. (matches userconfig)
+5 verbose stack Error: ENOENT, open '/Users/jokamura/package.json'
+5 verbose stack     at Error (native)
+6 verbose cwd /Users/jokamura/github/VZeroNodeDemo
+7 error Darwin 16.5.0
+8 error argv "/Users/jokamura/.nvm/versions/node/v0.12.7/bin/node" "/Users/jokamura/.nvm/versions/node/v0.12.7/bin/npm" "start"
+9 error node v0.12.7
+10 error npm  v2.11.3
+11 error path /Users/jokamura/package.json
+12 error code ENOENT
+13 error errno -2
+14 error enoent ENOENT, open '/Users/jokamura/package.json'
+14 error enoent This is most likely not a problem with npm itself
+14 error enoent and is related to npm not being able to find a file.
+15 verbose exit [ -2, true ]
