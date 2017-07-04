@@ -64,6 +64,10 @@ div#paypal.
   <a href="https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/" target="_blank">
    See the doc
   </a>
+  <br/>
+  <a href="https://braintree.github.io/braintree-web/current/PayPal.html#tokenize" target="_blank">
+    See the doc
+  </a>
 
   <h3>Client-side REST</h3>
   <div id="paypal-button"></div>
@@ -153,7 +157,21 @@ div#paypal.
                 flow:     'checkout',
                 amount:   '2000',
                 currency: 'JPY',
-                intent:   'sale'
+                intent:   'sale',
+                billingAgreementDescription: '都度決済です！',
+                displayName: 'ベンゾ商店',
+                enableShippingAddress: true,
+                shippingAddressEditable: true,
+                shippingAddressOverride: {
+                  line2:  '住所２ほげビル',
+                  line1:  '住所１北青山',
+                  city:   '港区',
+                  state:  '東京都',
+                  postalCode:  '123-4567',
+                  countryCode: 'JP',
+                  phone: '0322223333',
+                  recipientName: '太郎 山田'
+                }
             });
         },
 
