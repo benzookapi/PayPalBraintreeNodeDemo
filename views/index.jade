@@ -61,18 +61,21 @@ div#paypal.
     </script>
   -->
 
+  <script src="https://js.braintreegateway.com/web/3.19.0/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.19.0/js/paypal-checkout.min.js"></script>
+
+  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
   <a href="https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/" target="_blank">
-   See the doc
+   See the doc (PP)
   </a>
   <br/>
   <a href="https://braintree.github.io/braintree-web/current/PayPal.html#tokenize" target="_blank">
-    See the doc
+    See the doc (BT)
   </a>
 
   <h3>Client-side REST</h3>
   <div id="paypal-button"></div>
-
-  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
   <script>
     paypal.Button.render({
@@ -124,8 +127,7 @@ div#paypal.
 
   <div id="paypal-button-container"></div>
 
-  <script src="https://js.braintreegateway.com/web/3.19.0/js/client.min.js"></script>
-  <script src="https://js.braintreegateway.com/web/3.19.0/js/paypal-checkout.min.js"></script>
+
 
   <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
@@ -160,6 +162,7 @@ div#paypal.
                 intent:   'sale',
                 billingAgreementDescription: '都度決済です！',
                 displayName: 'ベンゾ商店',
+                landingPageType: 'billing',
                 enableShippingAddress: true,
                 shippingAddressEditable: true,
                 shippingAddressOverride: {
