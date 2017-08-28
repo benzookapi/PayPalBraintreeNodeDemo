@@ -2,10 +2,17 @@ var express = require('express');
 var router = express.Router();
 var braintree = require('braintree')
 
+var ACCESS_TOKEN = 'access_token$sandbox$btdxhpwfbt6dy2vt$41c6f24f692e018e2c68d84ce235fe79';
+
+var BT_ENV = braintree.Environment.Sandbox;
+var BT_ID = "sqhrsttx42vpt63j";
+var BT_PUB = "xwztjydf2g7zkdsw";
+var BT_PRI = "532d0a43a6ca6796b77d824ea60f88e0";
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   var gateway = braintree.connect({
-    accessToken: 'access_token$sandbox$btdxhpwfbt6dy2vt$41c6f24f692e018e2c68d84ce235fe79'
+    accessToken: ACCESS_TOKEN
   });
   gateway.clientToken.generate({}, function (err, response) {
     res.render('index', { clientToken: response.clientToken });
@@ -15,7 +22,7 @@ router.get('/', function(req, res, next) {
 router.post("/checkout", function (req, res) {
   // Use payment method nonce here
   var gateway = braintree.connect({
-    accessToken: 'access_token$sandbox$btdxhpwfbt6dy2vt$41c6f24f692e018e2c68d84ce235fe79'
+    accessToken: ACCESS_TOKEN
 　});
   var saleRequest = {
     amount: req.body.amount,
@@ -40,7 +47,7 @@ router.post("/checkout", function (req, res) {
 
 router.get('/vault', function(req, res, next) {
   var gateway = braintree.connect({
-    accessToken: 'access_token$sandbox$btdxhpwfbt6dy2vt$41c6f24f692e018e2c68d84ce235fe79'
+    accessToken: ACCESS_TOKEN
   });
   gateway.clientToken.generate({}, function (err, response) {
     res.render('vault', { clientToken: response.clientToken });
@@ -50,7 +57,7 @@ router.get('/vault', function(req, res, next) {
 router.post("/checkoutVault", function (req, res) {
   // Use payment method nonce here
   var gateway = braintree.connect({
-    accessToken: 'access_token$sandbox$btdxhpwfbt6dy2vt$41c6f24f692e018e2c68d84ce235fe79'
+    accessToken: ACCESS_TOKEN
 　});
   var saleRequest = {
     amount: req.body.amount,
@@ -85,7 +92,7 @@ router.get('/vault_sale', function(req, res, next) {
 router.post("/vaultSale", function (req, res) {
   // Use payment method nonce here
   var gateway = braintree.connect({
-    accessToken: 'access_token$sandbox$btdxhpwfbt6dy2vt$41c6f24f692e018e2c68d84ce235fe79'
+    accessToken: ACCESS_TOKEN
 　});
   var saleRequest = {
     amount: req.body.amount,
@@ -113,10 +120,10 @@ router.post("/vaultSale", function (req, res) {
 
 router.get('/hosted', function(req, res, next) {
   var gateway = braintree.connect({
-    environment: braintree.Environment.Sandbox,
-    merchantId: "sqhrsttx42vpt63j",
-    publicKey: "xwztjydf2g7zkdsw",
-    privateKey: "532d0a43a6ca6796b77d824ea60f88e0"
+    environment: BT_ENV,
+    merchantId: BT_ID,
+    publicKey: BT_PUB,
+    privateKey: BT_PRI
   });
   gateway.clientToken.generate({}, function (err, response) {
     res.render('hosted', { clientToken: response.clientToken });
@@ -126,10 +133,10 @@ router.get('/hosted', function(req, res, next) {
 router.post("/checkoutHosted", function (req, res) {
   // Use payment method nonce here
   var gateway = braintree.connect({
-    environment: braintree.Environment.Sandbox,
-    merchantId: "sqhrsttx42vpt63j",
-    publicKey: "xwztjydf2g7zkdsw",
-    privateKey: "532d0a43a6ca6796b77d824ea60f88e0"
+    environment: BT_ENV,
+    merchantId: BT_ID,
+    publicKey: BT_PUB,
+    privateKey: BT_PRI
   });
   console.log("%s %s", req.body.amount, req.body.payment_method_nonce)
   var saleRequest = {
