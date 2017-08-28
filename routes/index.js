@@ -60,7 +60,8 @@ router.post("/checkoutVault", function (req, res) {
     options: {
       submitForSettlement: true,
       storeInVaultOnSuccess: true // For Vault
-    }
+    },
+    deviceData: req.body.device_data
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
@@ -100,7 +101,7 @@ router.post("/vaultSale", function (req, res) {
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
         JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
-        "<br/><br/><a href=\"/vault_sale?customerId=" + req.body.customerId + "\">Try Vault Sale</a>" + 
+        "<br/><br/><a href=\"/vault_sale?customerId=" + req.body.customerId + "\">Try Vault Sale</a>" +
         "<br/><br/><a href=\"/\">Try again</a>");
     } else {
       res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");

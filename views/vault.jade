@@ -92,12 +92,149 @@ div#paypal.
 
   <div id="paypal-button-container"></div>
 
-  <script src="https://js.braintreegateway.com/web/3.19.0/js/client.min.js"></script>
-  <script src="https://js.braintreegateway.com/web/3.19.0/js/paypal-checkout.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.22.2/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.22.2/js/paypal-checkout.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.22.2/js/data-collector.min.js"></script>
 
   <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
   <script>
+
+    // Create a client.
+    braintree.client.create({
+      authorization: '#{clientToken}'
+    }, function (clientErr, clientInstance) {
+
+      // Stop if there was a problem creating the client.
+      // This could happen if there is a network error or if the authorization
+      // is invalid.
+      if (clientErr) {
+        console.error('Error creating client:', clientErr);
+        return;
+      }
+
+      // Get Device deta
+      braintree.dataCollector.create({
+        client: clientInstance,
+        paypal: true
+      }, function (err, dataCollectorInstance) {
+        if (err) {
+          // Handle error
+          return;
+        }
+        // At this point, you should access the dataCollectorInstance.deviceData value and provide it
+        // to your server, e.g. by injecting it into your form as a hidden input.
+        myDeviceData = dataCollectorInstance.deviceData;
+      });
+
+      // Create a PayPal Checkout component.
+      braintree.paypalCheckout.create({
+        client: clientInstance
+      }, function (paypalCheckoutErr, paypalCheckoutInstance) {
+
+        // Stop if there was a problem creating PayPal Checkout.
+        // This could happen if there was a network error or if it's incorrectly
+        // configured.
+        if (paypalCheckoutErr) {
+          console.error('Error creating PayPal Checkout:', paypalCheckoutErr);
+          return;
+        }
+
+        // Set up PayPal with the checkout.js library
+        paypal.Button.render({
+          env: 'sandbox', // or 'production'
+
+          locale: 'ja_JP',
+
+          style: {
+            size: 'medium',
+            color: 'gold',
+            shape: 'pill',
+            label: 'checkout'
+          },
+
+          commit: true, // Show a 'Pay Now' button
+
+          payment: function () {
+            return paypalCheckoutInstance.createPayment({
+              flow:     'vault',
+              amount:   '3000',
+              currency: 'JPY',
+              intent:   'sale',
+              billingAgreementDescription: '継続決済です！',
+              displayName: 'ベンゾ商店',
+              enableShippingAddress: true,
+              shippingAddressEditable: true,
+              shippingAddressOverride: {
+                line2:  '住所２ほげビル',
+                line1:  '住所１北青山',
+                city:   '港区',
+                state:  '東京都',
+                postalCode:  '123-4567',
+                countryCode: 'JP',
+                phone: '0322223333',
+                recipientName: '太郎 山田ボルト'
+              }
+            });
+          },
+
+          onAuthorize: function (data, actions) {
+            return paypalCheckoutInstance.tokenizePayment(data)
+              .then(function (payload) {
+                // Submit `payload.nonce` to your server.
+
+                //alert(JSON.stringify(payload));
+                //alert("myDeviceData: " + myDeviceData);
+
+                var form = document.createElement('form');
+                document.body.appendChild(form);
+
+                var inputNonce = document.createElement('input');
+                inputNonce.setAttribute('type', 'hidden');
+                inputNonce.setAttribute('name', 'payment_method_nonce');
+                inputNonce.setAttribute('value', payload.nonce);
+                form.appendChild(inputNonce);
+
+                var inputAmount = document.createElement('input');
+                inputAmount.setAttribute('type', 'hidden');
+                inputAmount.setAttribute('name', 'amount');
+                inputAmount.setAttribute('value', '3000');
+                form.appendChild(inputAmount);
+
+                var inputDeviceData = document.createElement('input');
+                inputDeviceData.setAttribute('type', 'hidden');
+                inputDeviceData.setAttribute('name', 'device_data');
+                inputDeviceData.setAttribute('value', myDeviceData);
+                form.appendChild(inputDeviceData);
+
+                form.setAttribute('action', '/checkoutVault');
+                form.setAttribute('method', 'post');
+                form.submit();
+
+              });
+          },
+
+          onCancel: function (data) {
+            console.log('checkout.js payment cancelled', JSON.stringify(data, 0, 2));
+          },
+
+          onError: function (err) {
+            console.error('checkout.js error', err);
+            }
+          }, '#paypal-button-container').then(function () {
+            // The PayPal button will be rendered in an html element with the id
+            // `paypal-button`. This function will be called when the PayPal button
+            // is set up and ready to be used.
+        });
+
+      });
+
+    });
+  </script>
+
+  <!--
+   OLD
+   <script>
     paypal.Button.render({
 
         env: 'sandbox', // Or 'production'
@@ -156,7 +293,8 @@ div#paypal.
         }
 
     }, '#paypal-button-container');
-  </script>
+   </script>
+  -->
 
   <br/>
   <br/><a href="/">Try Checkout</a>
