@@ -43,6 +43,35 @@ router.post("/checkout", function (req, res) {
   });
 });
 
+/* ------- For Auth -------- */
+
+router.post("/auth", function (req, res) {
+  // Use payment method nonce here
+  var gateway = braintree.connect({
+    accessToken: ACCESS_TOKEN
+　});
+  var saleRequest = {
+    amount: req.body.amount,
+    merchantAccountId: "JPY",
+    paymentMethodNonce: "" + req.body.payment_method_nonce,
+    options: {
+      submitForSettlement: false
+    }
+  };
+  gateway.transaction.sale(saleRequest, function (err, result) {
+    if (err) {
+      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
+    } else if (result.success) {
+      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
+        JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
+        "<br/><br/><a href=\"/\">Try again</a>" +
+        "<br/><br/><a href=\"/cap_trans?amount=" + req.body.amount + "&transactionId=" + result.transaction.id + "\">Try Capture</a>");
+    } else {
+      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
+    }
+  });
+});
+
 /* ------- For Vault -------- */
 
 router.get('/vault', function(req, res, next) {
@@ -109,6 +138,30 @@ router.post("/vaultSale", function (req, res) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
         JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
         "<br/><br/><a href=\"/vault_sale?customerId=" + req.body.customerId + "\">Try Vault Sale</a>" +
+        "<br/><br/><a href=\"/\">Try again</a>");
+    } else {
+      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
+    }
+  });
+});
+
+/* ------- For Cap -------- */
+
+router.get('/cap_trans', function(req, res, next) {
+  res.render('cap_trans', { amount: req.query.amount, transactionId: req.query.transactionId });
+});
+
+router.post("/capTrans", function (req, res) {
+  // Use payment method nonce here
+  var gateway = braintree.connect({
+    accessToken: ACCESS_TOKEN
+　});
+  gateway.transaction.submitForSettlement(req.body.transactionId, req.body.amount, function (err, result) {
+    if (err) {
+      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
+    } else if (result.success) {
+      res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
+        JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
         "<br/><br/><a href=\"/\">Try again</a>");
     } else {
       res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");

@@ -1,0 +1,6 @@
+div#paypal.
+  <form action="/capTrans" method="POST">
+   <label>Amount (JPY):</label><input type="text" value="#{amount}" name="amount"><br/>
+   <label>Transaction Id:</label><input type="text" value="#{transactionId}" name="transactionId"></br>
+   <input type="submit" value="Capture the auth!">
+  </form>
