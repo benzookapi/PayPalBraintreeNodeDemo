@@ -2,5 +2,14 @@ div#paypal.
   <form action="/vaultSale" method="POST">
    <label>Amount (JPY):</label><input type="text" value="#{amount}" name="amount"><br/>
    <label>Customer Id:</label><input type="text" value="#{customerId}" name="customerId"></br>
+   <label>Shipping first_name (Optinal):</label><input type="text" value="#{firstName}" name="firstName"></br>
+   <label>Shipping last_name (Optinal)</label><input type="text" value="#{lastName}" name="lastName"></br>
+   <label>Shipping company (Optinal)</label><input type="text" value="#{company}" name="company"></br>
+   <label>Shipping street_address (Optinal)</label><input type="text" value="#{streetAddress}" name="streetAddress"></br>
+   <label>Shipping extended_address (Optinal)</label><input type="text" value="#{extendedAddress}" name="extendedAddress"></br>
+  <label>Shipping locality (Optinal)</label><input type="text" value="#{locality}" name="locality"></br>
+   <label>Shipping region (Optinal)</label><input type="text" value="#{region}" name="region"></br>
+   <label>Shipping postal_code (Optinal)</label><input type="text" value="#{postalCode}" name="postalCode"></br>
+   <label>Shipping country_code_alpha2 (Optinal)</label><input type="text" value="#{countryCodeAlpha2}" name="countryCodeAlpha2"></br>
    <input type="submit" value="Pay by Vault!">
   </form>

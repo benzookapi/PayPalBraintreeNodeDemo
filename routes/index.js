@@ -115,7 +115,19 @@ router.post("/checkoutVault", function (req, res) {
 
 router.get('/vault_sale', function(req, res, next) {
   var amount = "" + (new Date().getMonth()+1) + "00" + new Date().getDate();
-  res.render('vault_sale', { amount: amount, customerId: req.query.customerId });
+  res.render('vault_sale', {
+    amount: amount,
+    customerId: req.query.customerId,
+    firstName: "太郎ボルト",
+    lastName: "山田ボルト",
+    company: "会社ボルト",
+    streetAddress: "センター街　１−３",
+    extendedAddress: "ほげビル　３０３号室",
+    locality: "渋谷区",
+    region: "東京都",
+    postalCode: "1234567",
+    countryCodeAlpha2: "JP"
+  });
 });
 
 router.post("/vaultSale", function (req, res) {
@@ -129,6 +141,17 @@ router.post("/vaultSale", function (req, res) {
     customerId: req.body.customerId,
     options: {
       submitForSettlement: true
+    },
+    shipping: {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      company: req.body.company,
+      streetAddress: req.body.streetAddress,
+      extendedAddress: req.body.extendedAddress,
+      locality: req.body.locality,
+      region: req.body.region,
+      postalCode: req.body.postalCode,
+      countryCodeAlpha2: req.body.countryCodeAlpha2
     }
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
