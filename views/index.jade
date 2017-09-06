@@ -170,6 +170,16 @@ div#paypal.
 
           commit: true, // Show a 'Pay Now' button
 
+          // This is called when the page gets shown.
+          validate: function(actions) {
+            //alert("validate");
+          },
+
+          // This is called when the button gets clicked
+          onClick: function() {
+            //alert("onClick");
+          },
+
           payment: function () {
             return paypalCheckoutInstance.createPayment({
               // Your PayPal options here. For available options, see
