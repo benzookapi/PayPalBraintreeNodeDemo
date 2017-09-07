@@ -61,6 +61,8 @@ div#paypal.
     </script>
   -->
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
   <script src="https://js.braintreegateway.com/web/3.22.2/js/client.min.js"></script>
   <script src="https://js.braintreegateway.com/web/3.22.2/js/paypal-checkout.min.js"></script>
 
@@ -211,7 +213,7 @@ div#paypal.
               .then(function (payload) {
                 // Submit `payload.nonce` to your server.
 
-                //alert(JSON.stringify(payload));  // PP shipping addresses is in payload.
+                console.log(JSON.stringify(payload));  // PP shipping addresses is in payload.
 
                 var form = document.createElement('form');
                 document.body.appendChild(form);
@@ -231,6 +233,12 @@ div#paypal.
                 form.setAttribute('action', '/checkout');
                 form.setAttribute('method', 'post');
                 form.submit();
+
+                /*jQuery.post('http://localhost:3000/checkout',
+                   { payment_method_nonce: payload.nonce, amount: "2000" })
+                .done(function(data) {
+                    alert(data);
+                });*/
 
             });
           },
