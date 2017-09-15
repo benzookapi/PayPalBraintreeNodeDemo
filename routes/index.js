@@ -30,7 +30,10 @@ router.post("/checkout", function (req, res) {
     merchantAccountId: "JPY",
     paymentMethodNonce: "" + req.body.payment_method_nonce,
     options: {
-      submitForSettlement: true
+      submitForSettlement: true,
+      paypal: {
+        customField: "販売者:ショップ１"
+      }
     }
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
