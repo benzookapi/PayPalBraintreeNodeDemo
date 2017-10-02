@@ -118,6 +118,9 @@ div#paypal.
                 // The payment is complete!
                 // You can now show a confirmation message to the customer
                 alert(JSON.stringify(payment));
+                console.log(JSON.stringify(payment));
+                alert(JSON.stringify(data));
+                console.log(JSON.stringify(data));
             });
         }
 
@@ -213,7 +216,11 @@ div#paypal.
               .then(function (payload) {
                 // Submit `payload.nonce` to your server.
 
+                //alert(JSON.stringify(payload));
+                //alert(JSON.stringify(data));
+
                 console.log(JSON.stringify(payload));  // PP shipping addresses is in payload.
+                console.log(JSON.stringify(data));
 
                 var form = document.createElement('form');
                 document.body.appendChild(form);
