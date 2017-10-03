@@ -38,11 +38,11 @@ router.post("/checkout", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     }
   });
 });
@@ -64,14 +64,14 @@ router.post("/auth", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
         JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
         "<br/><br/><a href=\"/\">Try again</a>" +
         "<br/><br/><a href=\"/cap_trans?amount=" + req.body.amount + "&transactionId=" + result.transaction.id + "\">Try Capture</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     }
   });
 });
@@ -105,14 +105,14 @@ router.post("/checkoutVault", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + " Customer ID: " + result.transaction.customer.id + "</h1><br/>" +
         JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
         "<br/><br/><a href=\"/\">Try again</a>" +
         "<br/><br/><a href=\"/vault_sale?customerId=" + result.transaction.customer.id + "\">Try Vault Sale</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     }
   });
 });
@@ -160,14 +160,14 @@ router.post("/vaultSale", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
         JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
         "<br/><br/><a href=\"/vault_sale?customerId=" + req.body.customerId + "\">Try Vault Sale</a>" +
         "<br/><br/><a href=\"/\">Try again</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     }
   });
 });
@@ -185,13 +185,13 @@ router.post("/capTrans", function (req, res) {
 　});
   gateway.transaction.submitForSettlement(req.body.transactionId, req.body.amount, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
         JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
         "<br/><br/><a href=\"/\">Try again</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     }
   });
 });
@@ -228,11 +228,11 @@ router.post("/checkoutHosted", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
     }
   });
 });
