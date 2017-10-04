@@ -125,6 +125,7 @@ div#paypal.
         // At this point, you should access the dataCollectorInstance.deviceData value and provide it
         // to your server, e.g. by injecting it into your form as a hidden input.
         myDeviceData = dataCollectorInstance.deviceData;
+        console.log("myDeviceData" + myDeviceData);
       });
 
       // Create a PayPal Checkout component.
