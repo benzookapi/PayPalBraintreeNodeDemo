@@ -34,6 +34,9 @@ router.post("/checkout", function (req, res) {
       paypal: {
         customField: "販売者:ショップ１"
       }
+    },
+    descriptor: {
+      name: "PAYPAL *12345678901234"
     }
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
