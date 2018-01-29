@@ -367,18 +367,19 @@ div#paypal.
                     transactions: [
                         {
                             amount: {
-                              total: '100',
+                              total: '1',
                               currency: 'JPY'
                             }
                         }
-                    ]
+                    ],
+                    intent: 'authorize'
                 }
             });
         },
 
         onAuthorize: function(data, actions) {
             return actions.payment.execute().then(function(payment) {
-                alert("Go to login! data: " + JSON.stringify(data) + " payment: " + JSON.stringify(payment));
+                alert("Go to login! \n data: " + JSON.stringify(data) + "\n payment: " + JSON.stringify(payment));
             });
         }
 
