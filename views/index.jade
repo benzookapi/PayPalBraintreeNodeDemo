@@ -59,7 +59,14 @@ div#paypal.
                 console.log(JSON.stringify(payment));
                 alert(JSON.stringify(data));
                 console.log(JSON.stringify(data));
+            }).catch(function(err) {
+               alert(JSON.stringify(err));
             });
+        },
+
+        onError: function(err) {
+            // Show an error page here, when an error occurs
+            alert(JSON.stringify(err));
         }
 
     }, '#paypal-button');
