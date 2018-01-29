@@ -1,66 +1,4 @@
 div#paypal.
-  <!--
-    <script src="https://js.braintreegateway.com/web/3.5.0/js/client.min.js"></script>
-    <script src="https://js.braintreegateway.com/web/3.5.0/js/paypal.min.js"></script>
-
-    <script src="https://www.paypalobjects.com/api/button.js?"
-     data-merchant="braintree"
-     data-id="paypal-button"
-     data-button="checkout"
-     data-color="gold"
-     data-size="medium"
-     data-shape="pill"
-     data-button_type="submit"
-     data-button_disabled="false"
-     data-locale="ja_JP"
-    ></script>
-
-    <script>
-    var paypalButton = document.getElementById('paypal-button');
-
-    // Create a Client component
-    braintree.client.create({
-      authorization: '#{clientToken}'
-    }, function (clientErr, clientInstance) {
-      // Create PayPal component
-      braintree.paypal.create({
-        client: clientInstance
-      }, function (err, paypalInstance) {
-        paypalButton.addEventListener('click', function () {
-        // Tokenize here!
-        paypalInstance.tokenize({
-          flow: 'checkout', // Required
-          amount: 1000, // Required
-          currency: 'JPY', // Required
-          locale: 'ja_JP'
-          }, function (err, tokenizationPayload) {
-            // Tokenization complete
-            // Send tokenizationPayload.nonce to server
-            var form = document.createElement('form');
-            document.body.appendChild(form);
-
-            var inputNonce = document.createElement('input');
-            inputNonce.setAttribute('type', 'hidden');
-            inputNonce.setAttribute('name', 'payment_method_nonce');
-            inputNonce.setAttribute('value', tokenizationPayload.nonce);
-            form.appendChild(inputNonce);
-
-            var inputAmount = document.createElement('input');
-            inputAmount.setAttribute('type', 'hidden');
-            inputAmount.setAttribute('name', 'amount');
-            inputAmount.setAttribute('value', '1000');
-            form.appendChild(inputAmount);
-
-            form.setAttribute('action', '/checkout');
-            form.setAttribute('method', 'post');
-            form.submit();
-          });
-        });
-      });
-    });
-    </script>
-  -->
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
   <script src="https://js.braintreegateway.com/web/3.22.2/js/client.min.js"></script>
@@ -388,86 +326,68 @@ div#paypal.
     });
   </script>
 
-  <!--
-  OLD
-  <script>
-    paypal.Button.render({
-
-        env: 'production', // Or 'production'
-
-        locale: 'ja_JP',
-
-        style: {
-            size: 'medium',
-            color: 'gold',
-            shape: 'pill',
-            label: 'checkout'
-        },
-
-        commit: true, // Show a 'Pay Now' button
-
-        braintree: braintree,
-
-        client: {
-            sandbox:    '#{clientToken}',
-            production: '#{clientToken}'
-        },
-
-        payment: function(actions) {
-            return actions.braintree.create({
-                flow:     'checkout',
-                amount:   '2000',
-                currency: 'JPY',
-                intent:   'sale',
-                billingAgreementDescription: '都度決済です！',
-                displayName: 'ベンゾ商店',
-                //landingPageType: 'billing',
-                enableShippingAddress: true,
-                shippingAddressEditable: true,
-                shippingAddressOverride: {
-                  line2:  '住所２ほげビル',
-                  line1:  '住所１北青山',
-                  city:   '港区',
-                  state:  '東京都',
-                  postalCode:  '123-4567',
-                  countryCode: 'JP',
-                  phone: '0322223333',
-                  recipientName: '太郎 山田'
-                }
-            });
-        },
-
-        onAuthorize: function(data) {
-
-            // Submit `data.nonce` to your server
-
-            var form = document.createElement('form');
-            document.body.appendChild(form);
-
-            var inputNonce = document.createElement('input');
-            inputNonce.setAttribute('type', 'hidden');
-            inputNonce.setAttribute('name', 'payment_method_nonce');
-            inputNonce.setAttribute('value', data.nonce);
-            form.appendChild(inputNonce);
-
-            var inputAmount = document.createElement('input');
-            inputAmount.setAttribute('type', 'hidden');
-            inputAmount.setAttribute('name', 'amount');
-            inputAmount.setAttribute('value', '2000');
-            form.appendChild(inputAmount);
-
-            form.setAttribute('action', '/checkout');
-            form.setAttribute('method', 'post');
-            form.submit();
-        }
-
-    }, '#paypal-button-container');
-  </script>
-  -->
-
-
 
   <br/>
   <br/><a href="/vault">Try Vault</a>
   <br/>
   <br/><a href="/hosted">Try Hosted Field</a>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
+  <h3>Login With PayPal using Client-side REST</h3>
+  <div id="paypal-button-login"></div>
+
+  <script>
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'production'
+
+        client: {
+            sandbox:    'Acz3G7kG9afqvZF7PJNw-hZvw_F9INQPnZGnSVbclnydHjpK53GxFkW67Wf76FbR8ZzbW_RB3Rznnckq',
+            production: 'xxxx'
+        },
+
+        locale: 'ja_JP',
+
+        style: {
+            label: 'paypal',
+            size:  'medium',    // small | medium | large | responsive
+            shape: 'rect',     // pill | rect
+            color: 'blue',     // gold | blue | silver | black
+            tagline: false
+        },
+
+        commit: false, // Show a 'Pay Now' button
+
+        payment: function(data, actions) {
+            return actions.payment.create({
+                payment: {
+                    transactions: [
+                        {
+                            amount: {
+                              total: '100',
+                              currency: 'JPY'
+                            }
+                        }
+                    ]
+                }
+            });
+        },
+
+        onAuthorize: function(data, actions) {
+            return actions.payment.execute().then(function(payment) {
+                alert("Go to login! data: " + JSON.stringify(data) + " payment: " + JSON.stringify(payment));
+            });
+        }
+
+    }, '#paypal-button-login');
+  </script>
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
+  <br/><a href="/old">Old Integration by Braintree SDK</a>

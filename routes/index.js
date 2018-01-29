@@ -240,4 +240,13 @@ router.post("/checkoutHosted", function (req, res) {
   });
 });
 
+router.get('/old', function(req, res, next) {
+  var gateway = braintree.connect({
+    accessToken: ACCESS_TOKEN
+  });
+  gateway.clientToken.generate({}, function (err, response) {
+    res.render('old', { clientToken: response.clientToken });
+  });
+});
+
 module.exports = router;
