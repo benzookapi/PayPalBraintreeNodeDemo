@@ -55,10 +55,11 @@ div#paypal.
 
                 // The payment is complete!
                 // You can now show a confirmation message to the customer
-                alert(JSON.stringify(payment));
-                console.log(JSON.stringify(payment));
-                alert(JSON.stringify(data));
-                console.log(JSON.stringify(data));
+                console.log("data: \n " + JSON.stringify(data, null, 4));
+                console.log("payment: \n " + JSON.stringify(payment, null, 4));
+                alert("data (check the console): \n " + JSON.stringify(data, null, 4));
+                alert("payment (check the console): \n " + JSON.stringify(payment, null, 4));
+
             }).catch(function(err) {
                alert(JSON.stringify(err));
             });
@@ -161,10 +162,8 @@ div#paypal.
               .then(function (payload) {
                 // Submit `payload.nonce` to your server.
 
-                //alert(JSON.stringify(payload));
-                //alert(JSON.stringify(data));
-                console.log("data: \n " + JSON.stringify(data));
-                console.log("payload: \n " + JSON.stringify(payload));
+                console.log("data: \n " + JSON.stringify(data, null, 4));
+                console.log("payload: \n " + JSON.stringify(payload, null, 4));
 
                 console.log(JSON.stringify(payload));  // PP shipping addresses is in payload.
                 console.log(JSON.stringify(data));
@@ -418,10 +417,10 @@ div#paypal.
               .then(function (payload) {
                 // Submit `payload.nonce` to your server.
 
-                alert("data: \n " + JSON.stringify(data));
-                alert("payload: \n " + JSON.stringify(payload));
-                console.log("data: \n " + JSON.stringify(data));
-                console.log("payload: \n " + JSON.stringify(payload));
+                alert("data (check the console): \n " + JSON.stringify(data, null, 4));
+                alert("payload (check the console): \n " + JSON.stringify(payload, null, 4));
+                console.log("data: \n " + JSON.stringify(data, null, 4));
+                console.log("payload: \n " + JSON.stringify(payload, null, 4));
             });
           },
 

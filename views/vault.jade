@@ -143,7 +143,7 @@ div#paypal.
 
     });
   </script>
-  
+
   <h3>Braintree SDK Customer Creation For Vault (applicable to Login-With-PayPal)</h3>
   <a href="https://developers.braintreepayments.com/guides/customers/ruby#create-with-payment-method" target="_blank">
   See doc.
@@ -228,11 +228,11 @@ div#paypal.
               .then(function (payload) {
                 // Submit `payload.nonce` to your server.
 
-                alert("data: \n " + JSON.stringify(data));
-                alert("payload: \n " + JSON.stringify(payload));
+                alert("data (check the console): \n " + JSON.stringify(data, null, 4));
+                alert("payload (check the console): \n " + JSON.stringify(payload, null, 4));
 
-                console.log("data: \n " + JSON.stringify(data));
-                console.log("payload: \n " + JSON.stringify(payload));
+                console.log("data: \n " + JSON.stringify(data, null, 4));
+                console.log("payload: \n " + JSON.stringify(payload, null, 4));
 
                 var form = document.createElement('form');
                 document.body.appendChild(form);
