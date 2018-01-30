@@ -108,14 +108,36 @@ router.post("/checkoutVault", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + " Customer ID: " + result.transaction.customer.id + "</h1><br/>" +
         JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
-        "<br/><br/><a href=\"/\">Try again</a>" +
+        "<br/><br/><a href=\"/vault\">Try again</a>" +
         "<br/><br/><a href=\"/vault_sale?customerId=" + result.transaction.customer.id + "\">Try Vault Sale</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
+    }
+  });
+});
+
+router.post('/customer', function(req, res) {
+  var gateway = braintree.connect({
+    accessToken: ACCESS_TOKEN
+  });
+  var csRequest = {
+    paymentMethodNonce: "" + req.body.payment_method_nonce,
+    deviceData: req.body.device_data
+  };
+  gateway.customer.create(csRequest, function (err, result) {
+    if (err) {
+      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
+    } else if (result.success) {
+      res.send("<h1>Success! Customer ID: " + result.customer.id + "</h1><br/>" +
+        JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
+        "<br/><br/><a href=\"/vault\">Try again</a>" +
+        "<br/><br/><a href=\"/vault_sale?customerId=" + result.customer.id + "\">Try Vault Sale</a>");
+    } else {
+      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
     }
   });
 });
@@ -163,14 +185,14 @@ router.post("/vaultSale", function (req, res) {
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
         JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
         "<br/><br/><a href=\"/vault_sale?customerId=" + req.body.customerId + "\">Try Vault Sale</a>" +
-        "<br/><br/><a href=\"/\">Try again</a>");
+        "<br/><br/><a href=\"/vault\">Try again</a>");
     } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
     }
   });
 });
