@@ -15,6 +15,11 @@ div#paypal.
   </a>
 
   <h3>Client-side REST</h3>
+  <a target="_blank" href="https://developer.paypal.com/docs/api/payments/#payment">
+   For payment.execute, see REST API docs.
+  </a>
+  <br/>
+  <br/>
   <div id="paypal-button"></div>
 
   <script>
@@ -440,6 +445,145 @@ div#paypal.
       });
 
     });
+  </script>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
+
+  <h3>Smart Payment Button (Multiple button layout)</h3>
+  <a target="_blank" href="https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/customize-button/#multiple-button-layout">
+  See Doc.
+  </a>
+  <br/>
+  <a target="_blank" href="https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/customize-button/#supported-locales">
+  Supported Locales
+  </a>
+  <br/>
+  <br/>
+  <h4>Default</h4>
+  <div id="paypal-button-smart"></div>
+  <br/>
+  <h4>Japan</h4>
+  <div id="paypal-button-smart-JP"></div>
+  <br/>
+  <h4>UK</h4>
+  <div id="paypal-button-smart-GB"></div>
+  <br/>
+  <h4>China</h4>
+  <div id="paypal-button-smart-CN"></div>
+  <br/>
+  <h4>Germany</h4>
+  <div id="paypal-button-smart-DE"></div>
+  <br/>
+  <h4>US Merchant</h4>
+  <div id="paypal-button-smart-US-MS"></div>
+
+
+  <script>
+  function SPBRender(country) {
+    var lc =  '';
+    var cl = 'Acz3G7kG9afqvZF7PJNw-hZvw_F9INQPnZGnSVbclnydHjpK53GxFkW67Wf76FbR8ZzbW_RB3Rznnckq';
+    var btn = '#paypal-button-smart';
+    if (country == 'JP') {
+       lc = 'ja_JP';
+       btn = '#paypal-button-smart-JP';
+    }
+    if (country == 'GB') {
+       lc = 'en_GB';
+       btn = '#paypal-button-smart-GB';
+    }
+    if (country == 'CN') {
+       lc = 'zh_CN';
+       btn = '#paypal-button-smart-CN';
+    }
+    if (country == 'DE') {
+       lc = 'de_DE';
+       btn = '#paypal-button-smart-DE';
+    }
+    if (country == 'US-MS') {
+       lc = 'en_US';
+       btn = '#paypal-button-smart-US-MS';
+       cl = 'AYUk--VySS7d6CHBPVt2shahgOC-wjk2ddZ_MQTqD0TBFuDqPWwZEOR78EnPImAP97189PhW3sWtPyZX';
+    }
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'production'
+
+        client: {
+            sandbox:    cl,
+            production: 'xxxx'
+        },
+
+        locale: lc,
+
+        style: {
+           layout: 'vertical',  // horizontal | vertical
+           size:   'medium',    // medium | large | responsive
+           shape:  'rect',      // pill | rect
+           color:  'gold'       // gold | blue | silver | black
+        },
+
+        funding: {
+            allowed: [ paypal.FUNDING.CARD, paypal.FUNDING.CREDIT, paypal.FUNDING.ELV],
+            disallowed: [ ]
+        },
+
+        commit: true, // Show a 'Pay Now' button
+
+        payment: function(data, actions) {
+            return actions.payment.create({
+                payment: {
+                    transactions: [
+                        {
+                            amount: { total: '1000', currency: 'JPY' },
+                            item_list: {
+                              "shipping_address": {
+                                "recipient_name": "太郎 山田",
+                                "line1": "住所１北青山",
+                                "line2": "住所２ほげビル",
+                                "city": "港区",
+                                "country_code": "JP",
+                                "postal_code": "123-4567",
+                                "phone": "0322223333",
+                                "state": "東京都"
+                              }
+                            }
+                        }
+                    ]
+                }
+            });
+        },
+
+        onAuthorize: function(data, actions) {
+            return actions.payment.execute().then(function(payment) {
+
+                // The payment is complete!
+                // You can now show a confirmation message to the customer
+                console.log("data: \n " + JSON.stringify(data, null, 4));
+                console.log("payment: \n " + JSON.stringify(payment, null, 4));
+                alert("data (check the console): \n " + JSON.stringify(data, null, 4));
+                alert("payment (check the console): \n " + JSON.stringify(payment, null, 4));
+
+            }).catch(function(err) {
+               alert(JSON.stringify(err));
+            });
+        },
+
+        onError: function(err) {
+            // Show an error page here, when an error occurs
+            alert(JSON.stringify(err));
+        }
+
+    }, btn);
+  }
+  SPBRender('JP');
+  SPBRender('US');
+  SPBRender('GB');
+  SPBRender('CN');
+  SPBRender('DE');
+  SPBRender('US-MS');
   </script>
 
   <br/>
