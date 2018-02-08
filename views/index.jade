@@ -48,7 +48,19 @@ div#paypal.
                 payment: {
                     transactions: [
                         {
-                            amount: { total: '1000', currency: 'JPY' }
+                            amount: { total: '1000', currency: 'JPY' },
+                            item_list: {
+                              "shipping_address": {
+                                "recipient_name": "太郎 山田",
+                                "line1": "住所１北青山",
+                                "line2": "住所２ほげビル",
+                                "city": "港区",
+                                "country_code": "JP",
+                                "postal_code": "123-4567",
+                                "phone": "0322223333",
+                                "state": "東京都"
+                              }
+                            }
                         }
                     ]
                 }
