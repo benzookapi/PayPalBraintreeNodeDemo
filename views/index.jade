@@ -232,6 +232,9 @@ div#paypal.
   </script>
 
   <h3>Braintree SDK (Auth & Cap)</h3>
+  <a href="http://www.getcreditcardnumbers.com/" target="_blank">Test Cards<a/>
+  <br/>
+  <br/>
 
   <div id="paypal-button-container-auth"></div>
 
@@ -269,11 +272,18 @@ div#paypal.
 
           locale: 'ja_JP',
 
-          style: {
+          /*style: {
             size: 'medium',
             color: 'gold',
             shape: 'pill',
             label: 'checkout'
+          },*/
+
+          style: {
+             layout: 'vertical',  // horizontal | vertical
+             size:   'medium',    // medium | large | responsive
+             shape:  'rect',      // pill | rect
+             color:  'gold'       // gold | blue | silver | black
           },
 
           commit: true, // Show a 'Pay Now' button
