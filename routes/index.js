@@ -181,10 +181,22 @@ router.post("/vaultSale", function (req, res) {
       region: req.body.region,
       postalCode: req.body.postalCode,
       countryCodeAlpha2: req.body.countryCodeAlpha2
-    }
+    },
+    lineItems: [
+      {
+        name: "Item 1 name",
+        quantity: 1,
+        kind: "debit",
+        totalAmount: req.body.amount,
+        taxAmount: 100,
+        unitAmount: (req.body.amount - 100)
+      }
+    ]
   };
   gateway.transaction.sale(saleRequest, function (err, result) {
     if (err) {
+      console.log(err);
+      console.log(result);
       res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
     } else if (result.success) {
       res.send("<h1>Success! Transaction ID: " + result.transaction.id + "</h1><br/>" +
