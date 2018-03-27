@@ -1,6 +1,6 @@
 You can check how it works with the following site.
 
-http://jo-pp-node-demo.herokuapp.com/
+https://jo-pp-node-demo.herokuapp.com/
 
 
 Sandbox Accounts for Hands-on
