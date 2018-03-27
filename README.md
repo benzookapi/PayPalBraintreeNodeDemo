@@ -1,3 +1,7 @@
+You can check how it works with the following site.
+http://jo-pp-node-demo.herokuapp.com/
+
+
 Sandbox Accounts for Hands-on
 
 | Email                      | Password  |  Type    | Access Token |
