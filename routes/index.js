@@ -283,4 +283,13 @@ router.get('/old', function(req, res, next) {
   });
 });
 
+router.get('/mp', function(req, res, next) {
+  var gateway = braintree.connect({
+    accessToken: ACCESS_TOKEN
+  });
+  gateway.clientToken.generate({}, function (err, response) {
+    res.render('mp', { clientToken: response.clientToken });
+  });
+});
+
 module.exports = router;
