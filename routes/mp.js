@@ -2,20 +2,20 @@ var express = require('express');
 var request = require('request');
 var router = express.Router();
 
-var CLIENT_ID = 'ATAYvJcjSbUxHwoCrbqh0YCdyX9x-1xfPNQAgLByHN-nQkt3QWUZOkUbmVnzwqLYdv-GJ4DkHN2VzkeY';
-var SECRET = 'EIQHgAI8GbrMg0v2MW6pNgGnNS4J8YUmiPrm69CPfbaIk2-c9TzC3tSx3ucYChdMimMYB11YWipW98tl';
-var PP_ENV = 'sandbox';
+var CLIENT_ID = process.env.PP_MP_CLIENT_ID;
+var SECRET = process.env.PP_MP_SECRET;
+var PARTNER_ID = process.env.PP_MP_PARTNER_ID;
+var ENV = process.env.PP_MP_ENV;
 
-var PARTNER_ID = 'XMSSFQGR93WPU';
 var RETURN_URL = 'http://localhost:3000/mp/order';
 if (process.env.PP_MP_RETURN_URL !== undefined) {
   RETURN_URL = process.env.PP_MP_RETURN_URL;
 }
 var LOGO_URL = '';
-var MERCHANT_ID = 'benzo20160830967';
+var MERCHANT_ID = 'benzo2016083096788';
 
 var s = 'sandbox.';
-if (PP_ENV == 'production') s = '';
+if (ENV == 'production') s = '';
 
 var API_ROOT = `https://api.${s}paypal.com/v1/`;
 
@@ -203,16 +203,16 @@ router.get('/order', function(req, res, next) {
       call_rest(`customer/partners/${PARTNER_ID}/merchant-integrations/${receiver}`, {}, 'GET', access_token, function(api_res) {
         console.log(JSON.stringify(api_res, null ,4));
         body = JSON.stringify(api_res.body);
-        res.render('mp_order', { env: PP_ENV, receiver: receiver, body: body,
+        res.render('mp_order', { env: ENV, receiver: receiver, body: body,
           order_url: `${RETURN_URL}/create?merchantIdInPayPal=${receiver}`, pay_url: `${RETURN_URL}/pay`});
       });
     });
   } else {
-    res.render('mp_order', { env: PP_ENV, receiver: receiver, body, order_url: '', pay_url: ''});
+    res.render('mp_order', { env: ENV, receiver: receiver, body, order_url: '', pay_url: ''});
   }
 });
 
-router.post('/order/create', function(req, res, next) {
+router.post('/order/create', function(req, res) {
   get_token(function(access_token) {
     var order_json = {
       "purchase_units": [{
@@ -268,7 +268,7 @@ router.post('/order/create', function(req, res, next) {
         },
         "payment_linked_group": 1,
         "custom": "oren",
-        "invoice_number": "invoice_oren_4262",
+        "invoice_number": "invoice_oren_4262okapi333",
         "payment_descriptor": "Example_Marketplace"
       }],
       "metadata": {
@@ -280,7 +280,7 @@ router.post('/order/create', function(req, res, next) {
         "cancel_url": RETURN_URL
       }
     };
-    console.log(JSON.stringify(order_json));
+    //console.log(JSON.stringify(order_json));
     call_rest(`checkout/orders`, order_json, 'POST', access_token, function(api_res) {
       console.log(JSON.stringify(api_res, null ,4));
       res.header('Content-Type', 'application/json; charset=utf-8');
@@ -289,15 +289,14 @@ router.post('/order/create', function(req, res, next) {
   });
 });
 
-router.post('/order/pay', function(req, res, next) {
-  console.log(JSON.stringify(req.body));
+router.post('/order/pay', function(req, res) {
+  //console.log(JSON.stringify(req.body));
   get_token(function(access_token) {
     var pay_json = {
-      //"disbursement_mode": "DELAYED"
       "disbursement_mode": "INSTANT"
+      //"disbursement_mode": "DELAYED"
     };
-    console.log(access_token);
-    call_rest(`checkout/orders/${req.body.orderID}`, pay_json, 'POST', access_token, function(api_res) {
+    call_rest(`checkout/orders/${req.body.orderID}/pay`, pay_json, 'POST', access_token, function(api_res) {
       console.log(JSON.stringify(api_res, null ,4));
       res.header('Content-Type', 'application/json; charset=utf-8');
       res.send(api_res.body);

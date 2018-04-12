@@ -4,17 +4,17 @@ div#paypal.
 
 
   <h3>=== Step 1. Onboarding ===</h3>
-  <h4> *Pattern 1. Upfront Onboarding with Partner Refferals API</h4>
-  <a href="https://developer.paypal.com/docs/marketplaces/connected/integration-guide/" target="_blank">See the doc.</a><br/>
-  <br/>
-  <button onclick="window.location.href='#{upfront_url}'" style="background-color:white; height:40">Connect your PayPal Account Pre-filled</button>
-  <br/>
-  <h4> *Pattern 2. URL Onboarding with URL Method</h4>
+  <h4> *Pattern 1. URL Onboarding with URL Method (No Integration)</h4>
   <a href="https://developer.paypal.com/docs/marketplaces/connected/url/" target="_blank">See the doc.</a><br/>
   <br/>
   <button onclick="window.location.href='#{url_method}'" style="background-color:gray; height:40">Connect your PayPal Account Not Pre-filled</button>
   <br/>
+  <h4> *Pattern 2. Upfront Onboarding with Partner Refferals API</h4>
+  <a href="https://developer.paypal.com/docs/marketplaces/connected/integration-guide/" target="_blank">See the doc.</a><br/>
+  <br/>
+  <button onclick="window.location.href='#{upfront_url}'" style="background-color:white; height:40">Connect your PayPal Account Pre-filled</button>
+  <br/>
   <br/>
   <br/>
 
-  <a href="/mp_order">Next: Step 2. Payment </a>
+  <a href="/mp/order">Next: Step 2. Payment </a>
