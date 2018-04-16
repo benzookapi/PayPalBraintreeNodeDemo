@@ -6,13 +6,17 @@ var CLIENT_ID = process.env.PP_MP_CLIENT_ID;
 var SECRET = process.env.PP_MP_SECRET;
 var PARTNER_ID = process.env.PP_MP_PARTNER_ID;
 var ENV = process.env.PP_MP_ENV;
+//console.log(CLIENT_ID);
+//console.log(SECRET);
+//console.log(PARTNER_ID);
+//console.log(ENV);
 
 var RETURN_URL = 'http://localhost:3000/mp/order';
 if (process.env.PP_MP_RETURN_URL !== undefined) {
   RETURN_URL = process.env.PP_MP_RETURN_URL;
 }
 var LOGO_URL = '';
-var MERCHANT_ID = 'benzo2016083096788';
+var MERCHANT_ID = `benzo${new Date().getTime()}`;
 
 var s = 'sandbox.';
 if (ENV == 'production') s = '';
@@ -21,8 +25,8 @@ var API_ROOT = `https://api.${s}paypal.com/v1/`;
 
 var URL_ONBOARD = `https://www.${s}paypal.com/us/merchantsignup/partner/onboardingentry?channelId=partner&productIntentId=addipmt` +
   `&partnerId=${PARTNER_ID}&returnToPartnerUrl=${RETURN_URL}&integrationType=TO&showPermissions=true` +
-  `&features=PAYMENT&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID}`;
-
+  `&features=PAYMENT,REFUND&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID}`;
+//console.log(URL_ONBOARD);
 
 router.get('/', function(req, res, next) {
   get_token(function(access_token) {
@@ -139,7 +143,7 @@ router.get('/', function(req, res, next) {
         ]
        },
        "financial_instrument_data": {
-        "bank_details": [
+        /*"bank_details": [
           {
             "nick_name": "Bank of America",
             "account_number": "123405668293",
@@ -152,7 +156,7 @@ router.get('/', function(req, res, next) {
               }
             ]
           }
-        ]
+        ]*/
        },
        "preferred_language_code": "en_US",
        "primary_currency_code": "USD",
@@ -167,11 +171,23 @@ router.get('/', function(req, res, next) {
         }
        ]
       },
-      "requested_capabilities": [
-       {
-        "capability": "BANK_ADDITION"
-       }
-      ],
+      "requested_capabilities": [{
+        "capability": "API_INTEGRATION",
+        "api_integration_preference": {
+          "partner_id": PARTNER_ID,
+          "rest_api_integration": {
+            "integration_method": "PAYPAL",
+            "integration_type": "THIRD_PARTY"
+          },
+          "rest_third_party_details": {
+            "partner_client_id": CLIENT_ID,
+            "feature_list": [
+              "PAYMENT",
+              "REFUND"
+            ]
+          }
+        }
+      }],
       "web_experience_preference": {
        "partner_logo_url": LOGO_URL,
        "return_url": RETURN_URL,
@@ -216,7 +232,7 @@ router.post('/order/create', function(req, res) {
   get_token(function(access_token) {
     var order_json = {
       "purchase_units": [{
-        "reference_id": "pu1_forward fashions",
+        "reference_id": `pu1_forward fashions ${new Date().getTime()}`,
         "description": "pu1_description",
         "amount": {
             "currency": "USD",
@@ -232,7 +248,7 @@ router.post('/order/create', function(req, res) {
         },
         "items": [{
             "name": "Denim Woven Shirt",
-            "sku": "sku01",
+            "sku": `sku${new Date().getTime()}`,
             "price": "100.00",
             "currency": "USD",
             "quantity": 1,
@@ -268,7 +284,7 @@ router.post('/order/create', function(req, res) {
         },
         "payment_linked_group": 1,
         "custom": "oren",
-        "invoice_number": "invoice_oren_4262okapi333",
+        "invoice_number": `invoice_oren_${new Date().getTime()}`,
         "payment_descriptor": "Example_Marketplace"
       }],
       "metadata": {
@@ -280,7 +296,7 @@ router.post('/order/create', function(req, res) {
         "cancel_url": RETURN_URL
       }
     };
-    //console.log(JSON.stringify(order_json));
+    console.log(JSON.stringify(order_json, null, 4));
     call_rest(`checkout/orders`, order_json, 'POST', access_token, function(api_res) {
       console.log(JSON.stringify(api_res, null ,4));
       res.header('Content-Type', 'application/json; charset=utf-8');

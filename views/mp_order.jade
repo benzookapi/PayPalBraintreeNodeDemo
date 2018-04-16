@@ -14,7 +14,7 @@ div#paypal.
   <br/>
   <br/>
 
-  <h4>Pay with Order API</h4>
+  <h4>Pay the receiver with Order API</h4>
   <a href="https://developer.paypal.com/docs/marketplaces/pp4mp/" target="_blank">See the doc.</a>
   <br/>
   <br/>
@@ -28,11 +28,23 @@ div#paypal.
             // Show the buyer a 'Pay Now' button in the checkout flow
             commit: true,
 
-            style: {
+            /*style: {
                 size: 'medium',
                 color: 'gold',
                 shape: 'pill',
                 label: 'checkout'
+            },*/
+
+            style: {
+               layout: 'vertical',  // horizontal | vertical
+               size:   'medium',    // medium | large | responsive
+               shape:  'rect',      // pill | rect
+               color:  'gold'       // gold | blue | silver | black
+            },
+
+            funding: {
+                allowed: [ paypal.FUNDING.CARD, paypal.FUNDING.CREDIT, paypal.FUNDING.ELV],
+                disallowed: [ ]
             },
 
             // payment() is called when the button is clicked
