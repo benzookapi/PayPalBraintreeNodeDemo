@@ -26,7 +26,7 @@ var API_ROOT = `https://api.${s}paypal.com/v1/`;
 var URL_ONBOARD = `https://www.${s}paypal.com/us/merchantsignup/partner/onboardingentry?channelId=partner&productIntentId=addipmt` +
   `&partnerId=${PARTNER_ID}&returnToPartnerUrl=${RETURN_URL}&integrationType=TO&showPermissions=true` +
   `&features=PAYMENT,REFUND&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID}`;
-//console.log(URL_ONBOARD);
+console.log(URL_ONBOARD);
 
 router.get('/', function(req, res, next) {
   get_token(function(access_token) {

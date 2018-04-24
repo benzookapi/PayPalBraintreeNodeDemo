@@ -48,12 +48,30 @@ div#paypal.
             label: 'checkout'
         },
 
+        /*style: {
+           layout: 'vertical',  // horizontal | vertical
+           size:   'medium',    // medium | large | responsive
+           shape:  'rect',      // pill | rect
+           color:  'gold'       // gold | blue | silver | black
+        },
+
+        funding: {
+            allowed: [ paypal.FUNDING.CARD, paypal.FUNDING.CREDIT, paypal.FUNDING.ELV],
+            disallowed: [ ]
+        },*/
+
         commit: true, // Show a 'Pay Now' button
 
         payment: function(data, actions) {
             return actions.payment.create({
                 payment: {
-                    transactions: [
+                  payer: {
+                    "payment_method": "paypal",
+                    "payer_info": {
+                      "email": "benzookapi-buyerCS@mail.com"
+                    }
+                  },
+                  transactions: [
                         {
                             amount: { total: '1000', currency: 'JPY' },
                             item_list: {
@@ -97,7 +115,7 @@ div#paypal.
     }, '#paypal-button');
   </script>
 
-
+  </br>
   <h3>Braintree SDK</h3>
 
   <div id="paypal-button-container"></div>
@@ -238,6 +256,7 @@ div#paypal.
     });
   </script>
 
+  </br>
   <h3>Braintree SDK (Auth & Cap)</h3>
   <a href="http://www.getcreditcardnumbers.com/" target="_blank">Test Cards<a/>
   <br/>
