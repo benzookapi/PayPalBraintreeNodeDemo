@@ -583,6 +583,12 @@ div#paypal.
         payment: function(data, actions) {
             return actions.payment.create({
                 payment: {
+                payer: {
+                    "payment_method": "paypal",
+                      "payer_info": {
+                        "email": "benzookapi-buyerCS2@mail.com"
+                      }
+                    },
                     transactions: [
                         {
                             amount: { total: '1000', currency: 'JPY' },
