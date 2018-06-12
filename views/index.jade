@@ -534,6 +534,32 @@ div#paypal.
     var lc =  '';
     var cl = 'ARKw7FVGu0SEqDD70gAkMTRsf6dbejAQZp30O_zL52d797gy5E9hZIFZ6TNFiOBGfuHG-pr2mBRUs8ax';
     var btn = '#paypal-button-smart';
+
+    //for EC
+    var bill_addr =  {
+      "line1": "請求住所１",
+      "line2": "請求住所２",
+      "city": "千代田区",
+      "country_code": "JP",
+      "postal_code": "999-9999",
+      "phone": "0312349999",
+      "state": "東京都"
+    };
+    var ship_addr = {
+      "recipient_name": "太郎 山田",
+      "line1": "住所１北青山",
+      "line2": "住所２ほげビル",
+      "city": "港区",
+      "country_code": "JP",
+      "postal_code": "123-4567",
+      "phone": "0322223333",
+      "state": "東京都"
+    };
+
+    //for DG (no-address)
+    //var bill_addr = {};
+    //var ship_addr = {};
+
     if (country == 'JP') {
        lc = 'ja_JP';
        btn = '#paypal-button-smart-JP';
@@ -555,6 +581,31 @@ div#paypal.
        btn = '#paypal-button-smart-US-MS';
        cl = 'AYUk--VySS7d6CHBPVt2shahgOC-wjk2ddZ_MQTqD0TBFuDqPWwZEOR78EnPImAP97189PhW3sWtPyZX';
     }
+
+    var payment = {
+      payment: {
+        payer: {
+          "payment_method": "paypal",
+          "payer_info": {
+            "email": "benzookapi-buyerCS2@mail.com"
+          }
+        },
+        transactions: [
+          {
+            amount: { total: '1000', currency: 'JPY' }
+          }
+        ]
+      }
+    };
+    if (Object.keys(bill_addr).length > 0) {
+      payment.payment.payer.payer_info.billing_address = bill_addr;
+    }
+    if (Object.keys(ship_addr).length > 0) {
+      payment.payment.transactions[0].item_list = {
+        "shipping_address": ship_addr
+      };
+    }
+
     paypal.Button.render({
 
         env: 'sandbox', // Or 'production'
@@ -581,33 +632,9 @@ div#paypal.
         commit: true, // Show a 'Pay Now' button
 
         payment: function(data, actions) {
-            return actions.payment.create({
-                payment: {
-                payer: {
-                    "payment_method": "paypal",
-                      "payer_info": {
-                        "email": "benzookapi-buyerCS2@mail.com"
-                      }
-                    },
-                    transactions: [
-                        {
-                            amount: { total: '1000', currency: 'JPY' },
-                            item_list: {
-                              "shipping_address": {
-                                "recipient_name": "太郎 山田",
-                                "line1": "住所１北青山",
-                                "line2": "住所２ほげビル",
-                                "city": "港区",
-                                "country_code": "JP",
-                                "postal_code": "123-4567",
-                                "phone": "0322223333",
-                                "state": "東京都"
-                              }
-                            }
-                        }
-                    ]
-                }
-            });
+            return actions.payment.create(
+                payment
+            );
         },
 
         onAuthorize: function(data, actions) {
