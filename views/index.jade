@@ -41,14 +41,14 @@ div#paypal.
 
         locale: 'ja_JP',
 
-        style: {
+        /*style: {
             size: 'medium',
             color: 'gold',
             shape: 'pill',
             label: 'checkout'
-        },
+        },*/
 
-        /*style: {
+        style: {
            layout: 'vertical',  // horizontal | vertical
            size:   'medium',    // medium | large | responsive
            shape:  'rect',      // pill | rect
@@ -58,7 +58,7 @@ div#paypal.
         funding: {
             allowed: [ paypal.FUNDING.CARD, paypal.FUNDING.CREDIT, paypal.FUNDING.ELV],
             disallowed: [ ]
-        },*/
+        },
 
         commit: true, // Show a 'Pay Now' button
 
@@ -68,6 +68,15 @@ div#paypal.
                   payer: {
                     "payment_method": "paypal",
                     "payer_info": {
+                      "billing_address": {
+                        "line1": "請求住所１",
+                        "line2": "請求住所２",
+                        "city": "千代田区",
+                        "country_code": "JP",
+                        "postal_code": "999-9999",
+                        "phone": "0399999999",
+                        "state": "東京都"
+                      },
                       "email": "benzookapi-buyerCS@mail.com"
                     }
                   },
