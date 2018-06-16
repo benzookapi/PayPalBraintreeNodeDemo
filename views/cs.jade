@@ -1,0 +1,29 @@
+div#paypal.
+  <h1>Consumer Onboarding Demo with REST API</h3>
+
+
+  <button onclick="window.location.href='#{upfront_url}'" style="background-color:white; height:40">Create your account with partner provided info</button>
+
+  <br/>
+  <br/>
+
+  <form method="POST" action="#{url}">
+    <input type="hidden" name="referralid" value="#{refid}" />
+    <input type="hidden" name="scope" value="profile email openid https://uri.paypal.com/services/paypalattributes https://uri.paypal.com/services/wallet/card-accounts/external-update https://uri.paypal.com/services/wallet/card-accounts/read https://uri.paypal.com/services/wallet/card-accounts/partner-update" />
+    <!--
+    <input type="hidden" name="state" value="key1=value1;key2=value2" />
+    <input type="hidden" name="paypal_client_metadata_id" value="<passed in from Magnes SDK>" />
+    <input type="hidden" name="redirect_uri" value="#{rtn}" />
+    -->
+    <button type="submit" id="start_onboarding_flow">Start Onboarding Flow</button>
+  </form>
+
+  <script>
+    window.paypalPartnerReady = function paypalPartnerReady() {
+      paypal.partner.setup({
+        button: 'start_onboarding_flow',
+        sandbox: true
+      });
+    }
+  </script>
+  <script src="//www.paypalobjects.com/js/external/conspartneronb/partner.js?c=1182015" async></script>

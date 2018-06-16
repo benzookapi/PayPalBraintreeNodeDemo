@@ -6,10 +6,10 @@ var CLIENT_ID = process.env.PP_MP_CLIENT_ID;
 var SECRET = process.env.PP_MP_SECRET;
 var PARTNER_ID = process.env.PP_MP_PARTNER_ID;
 var ENV = process.env.PP_MP_ENV;
-//console.log(CLIENT_ID);
-//console.log(SECRET);
-//console.log(PARTNER_ID);
-//console.log(ENV);
+console.log(`CLIENT_ID: ${CLIENT_ID}`);
+console.log(`SECRET: ${SECRET}`);
+console.log(`PARTNER_ID: ${PARTNER_ID}`);
+console.log(`ENV: ${ENV}`);
 
 var RETURN_URL = 'http://localhost:3000/mp/order';
 if (process.env.PP_MP_RETURN_URL !== undefined) {
@@ -22,11 +22,12 @@ var s = 'sandbox.';
 if (ENV == 'production') s = '';
 
 var API_ROOT = `https://api.${s}paypal.com/v1/`;
+console.log(`API_ROOT: ${API_ROOT}`);
 
 var URL_ONBOARD = `https://www.${s}paypal.com/us/merchantsignup/partner/onboardingentry?channelId=partner&productIntentId=addipmt` +
   `&partnerId=${PARTNER_ID}&returnToPartnerUrl=${RETURN_URL}&integrationType=TO&showPermissions=true` +
   `&features=PAYMENT,REFUND&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID}`;
-console.log(URL_ONBOARD);
+console.log(`URL_ONBOARD: ${URL_ONBOARD}`);
 
 router.get('/', function(req, res, next) {
   get_token(function(access_token) {
