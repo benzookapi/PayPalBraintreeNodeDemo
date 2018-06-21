@@ -29,13 +29,16 @@ var URL_ONBOARD = `https://www.${s}paypal.com/us/merchantsignup/partner/onboardi
   `&features=PAYMENT,REFUND&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID}`;
 console.log(`URL_ONBOARD: ${URL_ONBOARD}`);
 
+var m_generated_key = new Date().getTime();
+console.log(`m_generated_key: ${m_generated_key}`);
+
 router.get('/', function(req, res, next) {
   get_token(function(access_token) {
     var ref_json = {
       "customer_data": {
        "customer_type": "MERCHANT",
        "person_details": {
-         "email_address": "benzookapi+MP10@gmail.com",
+         "email_address": `benzookapi+MP${m_generated_key}@gmail.com`,
          "name": {
            "prefix": "Mr.",
            "given_name": "BENZO",
@@ -138,7 +141,7 @@ router.get('/', function(req, res, next) {
         ],
         "email_contacts": [
           {
-            "email_address": "benzookapi+MP10@gmail.com",
+            "email_address": `benzookapi+MPCS${m_generated_key}@gmail.com`,
             "role": "CUSTOMER_SERVICE"
           }
         ]
@@ -204,6 +207,7 @@ router.get('/', function(req, res, next) {
        "EXPRESS_CHECKOUT"
       ]
     };
+    console.log(JSON.stringify(ref_json, null ,4));
     call_rest('customer/partner-referrals', ref_json, 'POST', access_token, function(api_res) {
       console.log(JSON.stringify(api_res, null ,4));
       res.render('mp', { url_method: URL_ONBOARD, upfront_url: api_res.body.links[1].href});
@@ -233,16 +237,16 @@ router.post('/order/create', function(req, res) {
   get_token(function(access_token) {
     var order_json = {
       "purchase_units": [{
-        "reference_id": `pu1_forward fashions ${new Date().getTime()}`,
-        "description": "pu1_description",
+        "reference_id": `pu_forward fashions ${m_generated_key}`,
+        "description": `pu_description ${m_generated_key}`,
         "amount": {
             "currency": "USD",
             "details": {
-                "subtotal": "100.00",
+                "subtotal": "10.00",
                 "shipping": "0.00",
                 "tax": "0.00"
             },
-            "total": "100.00"
+            "total": "10.00"
         },
         "payee": {
             "merchant_id": req.query.merchantIdInPayPal
@@ -250,7 +254,7 @@ router.post('/order/create', function(req, res) {
         "items": [{
             "name": "Denim Woven Shirt",
             "sku": `sku${new Date().getTime()}`,
-            "price": "100.00",
+            "price": "10.00",
             "currency": "USD",
             "quantity": 1,
             "category": "PHYSICAL",
@@ -279,7 +283,7 @@ router.post('/order/create', function(req, res) {
                 "merchant_id": PARTNER_ID
             },
             "amount": {
-                "value": "16.80",
+                "value": "1.68",
                 "currency": "USD"
             }
         },
