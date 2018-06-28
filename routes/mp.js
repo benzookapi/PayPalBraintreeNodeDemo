@@ -187,7 +187,10 @@ router.get('/', function(req, res, next) {
             "partner_client_id": CLIENT_ID,
             "feature_list": [
               "PAYMENT",
-              "REFUND"
+              "REFUND",
+              "DELAY_FUNDS_DISBURSEMENT",
+              "READ_SELLER_DISPUTE",
+              "UPDATE_SELLER_DISPUTE" 
             ]
           }
         }
