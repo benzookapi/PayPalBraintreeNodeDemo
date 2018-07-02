@@ -26,7 +26,7 @@ console.log(`API_ROOT: ${API_ROOT}`);
 
 var URL_ONBOARD = `https://www.${s}paypal.com/us/merchantsignup/partner/onboardingentry?channelId=partner&productIntentId=addipmt` +
   `&partnerId=${PARTNER_ID}&returnToPartnerUrl=${RETURN_URL}&integrationType=TO&showPermissions=true` +
-  `&features=PAYMENT,REFUND&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID}`;
+  `&features=PAYMENT,REFUND,DELAY_FUNDS_DISBURSEMENT,READ_SELLER_DISPUTE,UPDATE_SELLER_DISPUTE&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID}`;
 console.log(`URL_ONBOARD: ${URL_ONBOARD}`);
 
 var m_generated_key = new Date().getTime();
@@ -190,7 +190,7 @@ router.get('/', function(req, res, next) {
               "REFUND",
               "DELAY_FUNDS_DISBURSEMENT",
               "READ_SELLER_DISPUTE",
-              "UPDATE_SELLER_DISPUTE" 
+              "UPDATE_SELLER_DISPUTE"
             ]
           }
         }
