@@ -32,7 +32,7 @@ router.post("/checkout", function (req, res) {
     options: {
       submitForSettlement: true,
       paypal: {
-        customField: "販売者:ショップ１"
+        customField: "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０"
       }
     },
     descriptor: {
