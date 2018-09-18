@@ -64,6 +64,9 @@ div#paypal.
 
         payment: function(data, actions) {
             return actions.payment.create({
+                /* meta: {
+                  partner_attribution_id: 'benzookapi'
+                }, */
                 payment: {
                   payer: {
                     "payment_method": "paypal",
