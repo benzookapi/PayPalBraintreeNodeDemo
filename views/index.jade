@@ -162,6 +162,8 @@ div#paypal.
         }
 
         // Set up PayPal with the checkout.js library
+        var amount = '2000';
+        var currency = 'JPY';
         paypal.Button.render({
           env: 'sandbox', // or 'production',
 
@@ -191,8 +193,8 @@ div#paypal.
               // Your PayPal options here. For available options, see
               // http://braintree.github.io/braintree-web/current/PayPalCheckout.html#createPayment
               flow:     'checkout',
-              amount:   '2000',
-              currency: 'JPY',
+              amount:   amount,
+              currency: currency,
               intent:   'sale',
               billingAgreementDescription: '都度決済です！',
               displayName: 'ベンゾ商店',
@@ -235,15 +237,21 @@ div#paypal.
                 var inputAmount = document.createElement('input');
                 inputAmount.setAttribute('type', 'hidden');
                 inputAmount.setAttribute('name', 'amount');
-                inputAmount.setAttribute('value', '2000');
+                inputAmount.setAttribute('value', amount);
                 form.appendChild(inputAmount);
+
+                var inputCurrency = document.createElement('input');
+                inputCurrency.setAttribute('type', 'hidden');
+                inputCurrency.setAttribute('name', 'currency');
+                inputCurrency.setAttribute('value', currency);
+                form.appendChild(inputCurrency);
 
                 form.setAttribute('action', '/checkout');
                 form.setAttribute('method', 'post');
                 form.submit();
 
                 /*jQuery.post('http://localhost:3000/checkout',
-                   { payment_method_nonce: payload.nonce, amount: "2000" })
+                   { payment_method_nonce: payload.nonce, amount: amount, currency: currency })
                 .done(function(data) {
                     alert(data);
                 });*/

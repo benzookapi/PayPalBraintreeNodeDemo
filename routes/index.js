@@ -27,7 +27,7 @@ router.post("/checkout", function (req, res) {
 　});
   var saleRequest = {
     amount: req.body.amount,
-    merchantAccountId: "JPY",
+    merchantAccountId: req.body.currency,
     paymentMethodNonce: "" + req.body.payment_method_nonce,
     options: {
       submitForSettlement: true,
