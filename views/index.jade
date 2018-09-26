@@ -120,9 +120,13 @@ div#paypal.
             });
         },
 
+        onCancel: function (data) {
+          console.log('checkout.js payment cancelled', JSON.stringify(data, null, 4));
+        },
+
         onError: function(err) {
             // Show an error page here, when an error occurs
-            alert(JSON.stringify(err));
+            alert(JSON.stringify(err, null, 4));
         }
 
     }, '#paypal-button');
