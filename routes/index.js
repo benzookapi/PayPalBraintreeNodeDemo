@@ -128,18 +128,35 @@ router.post('/customer', function(req, res) {
     paymentMethodNonce: "" + req.body.payment_method_nonce,
     deviceData: req.body.device_data
   };
-  gateway.customer.create(csRequest, function (err, result) {
-    if (err) {
-      res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
-    } else if (result.success) {
-      res.send("<h1>Success! Customer ID: " + result.customer.id + "</h1><br/>" +
-        JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
-        "<br/><br/><a href=\"/vault\">Try again</a>" +
-        "<br/><br/><a href=\"/vault_sale?customerId=" + result.customer.id + "\">Try Vault Sale</a>");
-    } else {
-      res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
-    }
-  });
+  if (typeof req.body.id === "undefined") {
+    gateway.customer.create(csRequest, function (err, result) {
+      if (err) {
+        res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
+      } else if (result.success) {
+        res.send("<h1>Success! Customer ID: " + result.customer.id + "</h1><br/>" +
+          JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
+          "<br/><br/><a href=\"/vault\">Try again</a>" +
+          "<br/><br/><a href=\"/vault_sale?customerId=" + result.customer.id + "\">Try Vault Sale</a>" +
+          "<br/><br/><a href=\"/vault?customerId=" + result.customer.id + "\">Update Customer</a>");
+      } else {
+        res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
+      }
+    });
+  } else {    
+    gateway.customer.update(req.body.id, csRequest, function (err, result) {
+      if (err) {
+        res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
+      } else if (result.success) {
+        res.send("<h1>Success! Customer ID: " + result.customer.id + "</h1><br/>" +
+          JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") +
+          "<br/><br/><a href=\"/vault\">Try again</a>" +
+          "<br/><br/><a href=\"/vault_sale?customerId=" + result.customer.id + "\">Try Vault Sale</a>" +
+          "<br/><br/><a href=\"/vault?customerId=" + result.customer.id + "\">Update Customer</a>");
+      } else {
+        res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
+      }
+    });
+  }
 });
 
 router.get('/vault_sale', function(req, res, next) {
