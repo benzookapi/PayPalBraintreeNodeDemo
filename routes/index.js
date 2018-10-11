@@ -187,8 +187,9 @@ router.post("/vaultSale", function (req, res) {
         name: "Item 1 name",
         quantity: 1,
         kind: "debit",
-        totalAmount: req.body.amount,
         taxAmount: 100,
+        totalAmount: req.body.amount,
+        unitTaxAmount: 100,
         unitAmount: (req.body.amount - 100)
       }
     ]
