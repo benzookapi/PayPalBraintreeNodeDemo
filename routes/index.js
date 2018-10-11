@@ -142,7 +142,7 @@ router.post('/customer', function(req, res) {
         res.send("<h1>Error:  " + result.message + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
       }
     });
-  } else {    
+  } else {
     gateway.customer.update(req.body.id, csRequest, function (err, result) {
       if (err) {
         res.send("<h1>Error:  " + err + "</h1><br/>" + JSON.stringify(result, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/vault\">Try again</a>");
