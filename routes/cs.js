@@ -25,46 +25,63 @@ router.get('/', function(req, res, next) {
     var ref_json = {
       "person_details": {
         "names": [{
-          "given_name": "John",
-          "surname": "Doe"
+          "given_name": "一郎",
+          "surname": "ペイパル"
          }],
         "phone_contacts": [{
           "phone": {
-          "country_code": "1",
-          "national_number": "4025555555"
+          "country_code": "81",
+          "national_number": "9012345678"
         },
           "phone_type": "HOME"
         }],
         "addresses": [{
           "address": {
-            "line1": "1234 Main St",
-            "line2": "",
-            "city": "San Jose",
-            "state": "CA",
-            "country_code": "US",
-            "postal_code": "95131"
+            "line1": "北青山",
+            "line2": "１−２−３",
+            "city": "港区",
+            "state": "東京都",
+            "country_code": "JP",
+            "postal_code": "1234567"
           }
         }],
         "email_addresses": [{
           "email_address": "jokksk-cs123@gmail.com",
           "primary": true,
-          "confirmed": false
-        }]
+          "confirmed": true
+        }],
+        "origin_country_code": "JP",
+        "date_of_birth": {
+          "date": "1980-01-01",
+          "confirmation": {
+            "status": "CONFIRMED" // or "NONE"
+          }
+        }
       },
       "paypal_account_properties": {
-        "account_country_code": "US"
+        "account_country_code": "JP",
+        "flow_intent": "CREATE_ACCOUNT"
       },
       "financial_instruments": {
         "card_accounts": [{
-          "account_number": "4111017406993726",
+          "account_number": "4285208988040967",
           "type": "VISA",
           "expiry_month": "11",
-          "expiry_year": "2018",
-          "country_code": "US",
+          "expiry_year": "2019",
+          "country_code": "JP",
           "confirmation": {
-            "status": "CONFIRMED"
+            "status": "CONFIRMED" // or "NONE"
           }
-        }]
+        }]/*,
+        "bank_details": [
+          {
+            "nick_name": "ゆうちょ銀行",
+            "account_number": "123405668293",
+            "account_type": "SAVING",
+            "currency_code": "JPY",
+            "country_code": "JP"
+          }
+        ]*/
       }
     };
     call_rest('customer/consumer-referrals', ref_json, 'POST', access_token, function(api_res) {
