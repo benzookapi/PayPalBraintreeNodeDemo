@@ -4,17 +4,17 @@ div#paypal.
   <h2>This is a Financial Partner Site!</h2>
 
 
-  <button onclick="window.location.href='#{upfront_url}&scope=openid&redirect_uri=#{rtn}'" style="background-color:white; height:40">Create your account with partner provided info</button>
+  <button onclick="window.location.href='#{upfront_url}&scope=openid&redirect_uri=#{rtn}'" style="background-color:white; height:40">Start Onboarding Flow by GET Redirection</button>
 
   <br/>
   <br/>
 
   <form method="POST" action="#{url}">
     <input type="hidden" name="referralid" value="#{refid}" />
-    <!--<input type="hidden" name="scope" value="https://uri.paypal.com/services/paypalattributes https://uri.paypal.com/services/wallet/card-accounts/external-update https://uri.paypal.com/services/wallet/card-accounts/read https://uri.paypal.com/services/wallet/card-accounts/partner-update" />-->
-    <input type="hidden" name="scope" value="openid">
+    <input type="hidden" name="scope" value="https://uri.paypal.com/services/paypalattributes https://uri.paypal.com/services/wallet/card-accounts/external-update https://uri.paypal.com/services/wallet/card-accounts/read https://uri.paypal.com/services/wallet/card-accounts/partner-update" />
+    <!--<input type="hidden" name="scope" value="openid">-->
     <!--<input type="hidden" name="state" value="key1=value1;key2=value2" />
     <input type="hidden" name="paypal_client_metadata_id" value="<passed in from Magnes SDK>" />-->
     <input type="hidden" name="redirect_uri" value="#{rtn}" />
-    <button type="submit" id="start_onboarding_flow">Start Onboarding Flow</button>
+    <button type="submit" id="start_onboarding_flow">Start Onboarding Flow by Form POST With Permission Granted</button>
   </form>
