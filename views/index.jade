@@ -100,7 +100,11 @@ div#paypal.
                               }
                             }
                         }
-                    ]
+                    ],
+                    redirect_urls: {
+                       "return_url": "https://www.google.co.jp/webhp?authuser=0",
+                       "cancel_url": "https://www.google.co.jp/webhp?authuser=0"
+                    }
                 }
             });
         },
@@ -114,6 +118,8 @@ div#paypal.
                 console.log("payment: \n " + JSON.stringify(payment, null, 4));
                 alert("data (check the console): \n " + JSON.stringify(data, null, 4));
                 alert("payment (check the console): \n " + JSON.stringify(payment, null, 4));
+
+                actions.redirect();
 
             }).catch(function(err) {
                alert(JSON.stringify(err));
