@@ -555,7 +555,7 @@ div#paypal.
     var btn = '#paypal-button-smart';
 
     //for EC
-    var bill_addr =  {
+    /*var bill_addr =  {
       "line1": "請求住所１",
       "line2": "請求住所２",
       "city": "千代田区",
@@ -573,11 +573,11 @@ div#paypal.
       "postal_code": "123-4567",
       "phone": "0322223333",
       "state": "東京都"
-    };
+    };*/
 
     //for DG (no-address)
-    //var bill_addr = {};
-    //var ship_addr = {};
+    var bill_addr = {};
+    var ship_addr = {};
 
     if (country == 'JP') {
        lc = 'ja_JP';
