@@ -69,7 +69,19 @@ div#paypal.
                 }, */
                 payment: {
                   payer: {
-                    "payment_method": "paypal"
+                    "payment_method": "paypal",
+                    "payer_info": {
+                      "email": "benzookapi-buyer@gmail.com",
+                      "billing_address": {
+                        "line1": "請求住所１",
+                        "line2": "請求住所２",
+                        "city": "千代田区",
+                        "country_code": "JP",
+                        "postal_code": "999-9999",
+                        "phone": "0312349999",
+                        "state": "東京都"
+                      }
+                    }
                   },
                   transactions: [
                         {
@@ -554,8 +566,11 @@ div#paypal.
     var cl = 'ARKw7FVGu0SEqDD70gAkMTRsf6dbejAQZp30O_zL52d797gy5E9hZIFZ6TNFiOBGfuHG-pr2mBRUs8ax';
     var btn = '#paypal-button-smart';
 
-    //for EC
-    /*var bill_addr =  {
+    //Setting buyer info (for Tangible)
+    /*var payer_info = {
+      "email": "benzookapi-buyerCS2@mail.com"
+    };
+    var bill_addr =  {
       "line1": "請求住所１",
       "line2": "請求住所２",
       "city": "千代田区",
@@ -575,7 +590,8 @@ div#paypal.
       "state": "東京都"
     };*/
 
-    //for DG (no-address)
+    //No buyer info (for Intagible)
+    var payer_info = {};
     var bill_addr = {};
     var ship_addr = {};
 
@@ -604,10 +620,7 @@ div#paypal.
     var payment = {
       payment: {
         payer: {
-          "payment_method": "paypal",
-          "payer_info": {
-            "email": "benzookapi-buyerCS2@mail.com"
-          }
+          "payment_method": "paypal"
         },
         transactions: [
           {
@@ -616,6 +629,9 @@ div#paypal.
         ]
       }
     };
+    if (Object.keys(payer_info).length > 0) {
+      payment.payment.payer.payer_info = payer_info;
+    }
     if (Object.keys(bill_addr).length > 0) {
       payment.payment.payer.payer_info.billing_address = bill_addr;
     }
