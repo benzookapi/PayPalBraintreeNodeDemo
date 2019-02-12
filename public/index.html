@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Pro account in Sandbox-->
+  <!--<script src="https://www.paypal.com/sdk/js?client-id=ARKw7FVGu0SEqDD70gAkMTRsf6dbejAQZp30O_zL52d797gy5E9hZIFZ6TNFiOBGfuHG-pr2mBRUs8ax&currency=JPY&locale=ja_JP">
+  </script>-->
+  <!-- Non-pro account in Sandbox-->
+  <script src="https://www.paypal.com/sdk/js?client-id=AZXyX6VczmxcNmcUiKQyl5AGPlUg3-gtmdaiFeyvmckUBzMk6aq9g32KPbEuYZY-MXdqzXhI0bs85Uil&currency=JPY&locale=ja_JP">
+  </script>
+  <!-- Non-pro account in Production-->
+  <!--<script src="https://www.paypal.com/sdk/js?client-id=ARKw7FVGu0SEqDD70gAkMTRsf6dbejAQZp30O_zL52d797gy5E9hZIFZ6TNFiOBGfuHG-pr2mBRUs8ax&currency=JPY&locale=ja_JP">
+  </script>-->
+</head>
+<body>
+  <h1><a href="https://developer.paypal.com/docs/checkout/" target="_blank">PayPal Checkout</a></h1>
+  
+  <a href="https://developer.paypal.com/docs/api/orders/v2/" target="_blank">Order API</a>
+  <br/>
+  <a href="https://developer.paypal.com/docs/api/payments/v2/" target="_blank">Payment API</a>
+  <br/>
+  <br/>
+
+  The button size needs set as its container style sheet.
+  <div style="border: 1px solid gray; padding: 10px; width: 300px;">    
+    <div id="paypal-button-container"></div>
+  </div>
+
+  <script>
+    paypal.Buttons({
+      style: {
+        layout:  'vertical',
+        color:   'gold',
+        shape:   'rect',
+        label:   'paypal'
+      },
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: '1000'
+            }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        // Capture the funds from the transaction
+        return actions.order.capture().then(function(details) {
+          // Show a success message to your buyer
+          //alert('Transaction completed by ' + details.payer.name.given_name);
+
+          console.log("details: \n " + JSON.stringify(details, null, 4));
+          alert("details: \n " + JSON.stringify(details, null, 4));
+        });
+      }
+    }).render('#paypal-button-container');
+  </script>
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <a href="/old2">Old Integration</a>
+</body>

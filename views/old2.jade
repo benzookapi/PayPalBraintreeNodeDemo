@@ -1,0 +1,713 @@
+div#paypal.
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <script src="https://js.braintreegateway.com/web/3.38.1/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.38.1/js/paypal-checkout.min.js"></script>
+
+  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+  <h1>PayPal Braintree Integration Demo (unofficial)</h1>
+  <a href="https://github.com/benzookapi/PayPalBraintreeNodeDemo" target="_blank">
+   Source code on Github
+  </a>
+  <br/>
+  <br/>
+
+  <a href="https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/" target="_blank">
+   See the doc (PP)
+  </a>
+  <br/>
+  <a href="https://braintree.github.io/braintree-web/current/PayPal.html#tokenize" target="_blank">
+    See the doc (BT)
+  </a>
+
+  <h3>Client-side REST</h3>
+  <a target="_blank" href="https://developer.paypal.com/docs/api/payments/#payment">
+   For payment.execute, see REST API docs.
+  </a>
+  <br/>
+  <br/>
+  <div id="paypal-button"></div>
+
+  <script>
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'production'
+
+        client: {
+            sandbox:    'ARKw7FVGu0SEqDD70gAkMTRsf6dbejAQZp30O_zL52d797gy5E9hZIFZ6TNFiOBGfuHG-pr2mBRUs8ax',
+            production: 'xxxx'
+        },
+
+        locale: 'ja_JP',
+
+        /*style: {
+            size: 'medium',
+            color: 'gold',
+            shape: 'pill',
+            label: 'checkout'
+        },*/
+
+        style: {
+           layout: 'vertical',  // horizontal | vertical
+           size:   'medium',    // medium | large | responsive
+           shape:  'pill',      // pill | rect
+           color:  'gold'       // gold | blue | silver | black
+        },
+
+        funding: {
+            allowed: [ paypal.FUNDING.CARD, paypal.FUNDING.CREDIT, paypal.FUNDING.ELV],
+            disallowed: [ ]
+        },
+
+        commit: true, // Show a 'Pay Now' button
+
+        payment: function(data, actions) {
+            return actions.payment.create({
+                /* meta: {
+                  partner_attribution_id: 'benzookapi'
+                }, */
+                payment: {
+                  payer: {
+                    "payment_method": "paypal",
+                    "payer_info": {
+                      "email": "benzookapi-buyer@gmail.com",
+                      "billing_address": {
+                        "line1": "請求住所１",
+                        "line2": "請求住所２",
+                        "city": "千代田区",
+                        "country_code": "JP",
+                        "postal_code": "999-9999",
+                        "phone": "0312349999",
+                        "state": "東京都"
+                      }
+                    }
+                  },
+                  transactions: [
+                        {
+                            amount: { total: '1000', currency: 'JPY' },
+                            description: "This is a transaction description!",
+                            item_list: {
+                              "shipping_address": {
+                                "recipient_name": "太郎 山田",
+                                "line1": "住所１北青山",
+                                "line2": "住所２ほげビル",
+                                "city": "港区",
+                                "country_code": "JP",
+                                "postal_code": "123-4567",
+                                "phone": "0322223333",
+                                "state": "東京都"
+                              }
+                            }
+                        }
+                    ],
+                    redirect_urls: {
+                       "return_url": "https://www.google.co.jp/webhp?authuser=0",
+                       "cancel_url": "https://www.google.co.jp/webhp?authuser=0"
+                    }
+                }
+            });
+        },
+
+        onAuthorize: function(data, actions) {
+            return actions.payment.execute().then(function(payment) {
+
+                // The payment is complete!
+                // You can now show a confirmation message to the customer
+                console.log("data: \n " + JSON.stringify(data, null, 4));
+                console.log("payment: \n " + JSON.stringify(payment, null, 4));
+                alert("data (check the console): \n " + JSON.stringify(data, null, 4));
+                alert("payment (check the console): \n " + JSON.stringify(payment, null, 4));
+
+                actions.redirect();
+
+            }).catch(function(err) {
+               alert(JSON.stringify(err));
+            });
+        },
+
+        onCancel: function (data) {
+          console.log('checkout.js payment cancelled', JSON.stringify(data, null, 4));
+        },
+
+        onError: function(err) {
+            // Show an error page here, when an error occurs
+            alert(JSON.stringify(err, null, 4));
+        }
+
+    }, '#paypal-button');
+  </script>
+
+  <br>
+  <h3>Braintree SDK</h3>
+
+  <div id="paypal-button-container"></div>
+
+
+  <script>
+    // Create a client.
+    braintree.client.create({
+      authorization: '#{clientToken}'
+    }, function (clientErr, clientInstance) {
+
+      // Stop if there was a problem creating the client.
+      // This could happen if there is a network error or if the authorization
+      // is invalid.
+      if (clientErr) {
+        console.error('Error creating client:', clientErr);
+        return;
+      }
+
+      // Create a PayPal Checkout component.
+      braintree.paypalCheckout.create({
+        client: clientInstance
+      }, function (paypalCheckoutErr, paypalCheckoutInstance) {
+
+        // Stop if there was a problem creating PayPal Checkout.
+        // This could happen if there was a network error or if it's incorrectly
+        // configured.
+        if (paypalCheckoutErr) {
+          console.error('Error creating PayPal Checkout:', paypalCheckoutErr);
+          return;
+        }
+
+        // Set up PayPal with the checkout.js library
+        var amount = '2000';
+        var currency = 'JPY';
+        paypal.Button.render({
+          env: 'sandbox', // or 'production',
+
+          locale: 'ja_JP',
+
+          style: {
+            size: 'medium',
+            color: 'gold',
+            shape: 'pill',
+            label: 'checkout'
+          },
+
+          commit: true, // Show a 'Pay Now' button
+
+          // This is called when the page gets shown.
+          validate: function(actions) {
+            //alert("validate");
+          },
+
+          // This is called when the button gets clicked
+          onClick: function() {
+            //alert("onClick");
+          },
+
+          payment: function () {
+            return paypalCheckoutInstance.createPayment({
+              // Your PayPal options here. For available options, see
+              // http://braintree.github.io/braintree-web/current/PayPalCheckout.html#createPayment
+              flow:     'checkout',
+              amount:   amount,
+              currency: currency,
+              intent:   'sale',
+              billingAgreementDescription: '都度決済です！',
+              displayName: 'ベンゾ商店',
+              //landingPageType: 'billing',
+              enableShippingAddress: true,
+              shippingAddressEditable: true,
+              shippingAddressOverride: {
+                line2:  '住所２ほげビル',
+                line1:  '住所１北青山',
+                city:   '港区',
+                state:  '東京都',
+                postalCode:  '123-4567',
+                countryCode: 'JP',
+                phone: '0322223333',
+                recipientName: '太郎 山田'
+              }
+            });
+          },
+
+          onAuthorize: function (data, actions) {
+            return paypalCheckoutInstance.tokenizePayment(data)
+              .then(function (payload) {
+                // Submit `payload.nonce` to your server.
+
+                console.log("data: \n " + JSON.stringify(data, null, 4));
+                console.log("payload: \n " + JSON.stringify(payload, null, 4));
+
+                console.log(JSON.stringify(payload));  // PP shipping addresses is in payload.
+                console.log(JSON.stringify(data));
+
+                var form = document.createElement('form');
+                document.body.appendChild(form);
+
+                var inputNonce = document.createElement('input');
+                inputNonce.setAttribute('type', 'hidden');
+                inputNonce.setAttribute('name', 'payment_method_nonce');
+                inputNonce.setAttribute('value', payload.nonce);
+                form.appendChild(inputNonce);
+
+                var inputAmount = document.createElement('input');
+                inputAmount.setAttribute('type', 'hidden');
+                inputAmount.setAttribute('name', 'amount');
+                inputAmount.setAttribute('value', amount);
+                form.appendChild(inputAmount);
+
+                var inputCurrency = document.createElement('input');
+                inputCurrency.setAttribute('type', 'hidden');
+                inputCurrency.setAttribute('name', 'currency');
+                inputCurrency.setAttribute('value', currency);
+                form.appendChild(inputCurrency);
+
+                form.setAttribute('action', '/old2/checkout');
+                form.setAttribute('method', 'post');
+                form.submit();
+
+                /*jQuery.post('http://localhost:3000/checkout',
+                   { payment_method_nonce: payload.nonce, amount: amount, currency: currency })
+                .done(function(data) {
+                    alert(data);
+                });*/
+
+            });
+          },
+
+          onCancel: function (data) {
+            console.log('checkout.js payment cancelled', JSON.stringify(data, 0, 2));
+          },
+
+          onError: function (err) {
+            console.error('checkout.js error', err);
+          }
+        }, '#paypal-button-container').then(function () {
+          // The PayPal button will be rendered in an html element with the id
+          // `paypal-button`. This function will be called when the PayPal button
+          // is set up and ready to be used.
+        });
+
+      });
+
+    });
+  </script>
+
+  </br>
+  <h3>Braintree SDK (Auth & Cap)</h3>
+  <a href="http://www.getcreditcardnumbers.com/" target="_blank">Test Cards<a/>
+  <br/>
+  <br/>
+
+  <div id="paypal-button-container-auth"></div>
+
+
+  <script>
+    // Create a client.
+    braintree.client.create({
+      authorization: '#{clientToken}'
+    }, function (clientErr, clientInstance) {
+
+      // Stop if there was a problem creating the client.
+      // This could happen if there is a network error or if the authorization
+      // is invalid.
+      if (clientErr) {
+        console.error('Error creating client:', clientErr);
+        return;
+      }
+
+      // Create a PayPal Checkout component.
+      braintree.paypalCheckout.create({
+        client: clientInstance
+      }, function (paypalCheckoutErr, paypalCheckoutInstance) {
+
+        // Stop if there was a problem creating PayPal Checkout.
+        // This could happen if there was a network error or if it's incorrectly
+        // configured.
+        if (paypalCheckoutErr) {
+          console.error('Error creating PayPal Checkout:', paypalCheckoutErr);
+          return;
+        }
+
+        // Set up PayPal with the checkout.js library
+        paypal.Button.render({
+          env: 'sandbox', // or 'production',
+
+          locale: 'ja_JP',
+
+          /*style: {
+            size: 'medium',
+            color: 'gold',
+            shape: 'pill',
+            label: 'checkout'
+          },*/
+
+          style: {
+             layout: 'vertical',  // horizontal | vertical
+             size:   'medium',    // medium | large | responsive
+             shape:  'rect',      // pill | rect
+             color:  'gold'       // gold | blue | silver | black
+          },
+
+          commit: true, // Show a 'Pay Now' button
+
+          payment: function () {
+            return paypalCheckoutInstance.createPayment({
+              // Your PayPal options here. For available options, see
+              // http://braintree.github.io/braintree-web/current/PayPalCheckout.html#createPayment
+              flow:     'checkout',
+              amount:   '2000',
+              currency: 'JPY',
+              intent:   'authorize',
+              billingAgreementDescription: '都度決済です！',
+              displayName: 'ベンゾ商店',
+              //landingPageType: 'billing',
+              enableShippingAddress: true,
+              shippingAddressEditable: true,
+              shippingAddressOverride: {
+                line2:  '住所２ほげビル',
+                line1:  '住所１北青山',
+                city:   '港区',
+                state:  '東京都',
+                postalCode:  '123-4567',
+                countryCode: 'JP',
+                phone: '0322223333',
+                recipientName: '太郎 山田'
+              }
+            });
+          },
+
+          onAuthorize: function (data, actions) {
+            return paypalCheckoutInstance.tokenizePayment(data)
+              .then(function (payload) {
+                // Submit `payload.nonce` to your server.
+
+                //alert(JSON.stringify(payload));  // PP shipping addresses is in payload.
+
+                var form = document.createElement('form');
+                document.body.appendChild(form);
+
+                var inputNonce = document.createElement('input');
+                inputNonce.setAttribute('type', 'hidden');
+                inputNonce.setAttribute('name', 'payment_method_nonce');
+                inputNonce.setAttribute('value', payload.nonce);
+                form.appendChild(inputNonce);
+
+                var inputAmount = document.createElement('input');
+                inputAmount.setAttribute('type', 'hidden');
+                inputAmount.setAttribute('name', 'amount');
+                inputAmount.setAttribute('value', '2000');
+                form.appendChild(inputAmount);
+
+                form.setAttribute('action', '/old2/auth');
+                form.setAttribute('method', 'post');
+                form.submit();
+
+            });
+          },
+
+          onCancel: function (data) {
+            console.log('checkout.js payment cancelled', JSON.stringify(data, 0, 2));
+          },
+
+          onError: function (err) {
+            console.error('checkout.js error', err);
+          }
+        }, '#paypal-button-container-auth').then(function () {
+          // The PayPal button will be rendered in an html element with the id
+          // `paypal-button`. This function will be called when the PayPal button
+          // is set up and ready to be used.
+        });
+
+      });
+
+    });
+  </script>
+
+
+  <br/>
+  <br/><a href="/old2/vault">Try Vault</a>
+  <br/>
+  <br/><a href="/old2/hosted">Try Hosted Field</a>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
+  <h3>Login With PayPal using Braintree SDK</h3>
+  <div id="paypal-button-login"></div>
+
+  <script>
+    // Create a client.
+    braintree.client.create({
+      authorization: '#{clientToken}'
+    }, function (clientErr, clientInstance) {
+
+      // Stop if there was a problem creating the client.
+      // This could happen if there is a network error or if the authorization
+      // is invalid.
+      if (clientErr) {
+        console.error('Error creating client:', clientErr);
+        return;
+      }
+
+      // Create a PayPal Checkout component.
+      braintree.paypalCheckout.create({
+        client: clientInstance
+      }, function (paypalCheckoutErr, paypalCheckoutInstance) {
+
+        // Stop if there was a problem creating PayPal Checkout.
+        // This could happen if there was a network error or if it's incorrectly
+        // configured.
+        if (paypalCheckoutErr) {
+          console.error('Error creating PayPal Checkout:', paypalCheckoutErr);
+          return;
+        }
+
+        // Set up PayPal with the checkout.js library
+        paypal.Button.render({
+          env: 'sandbox', // or 'production',
+
+          locale: 'ja_JP',
+
+          style: {
+              label: 'paypal',
+              size:  'medium',    // small | medium | large | responsive
+              shape: 'rect',     // pill | rect
+              color: 'blue',     // gold | blue | silver | black
+              tagline: false
+          },
+
+          commit: false, // Show a 'Pay Now' button
+
+          // This is called when the page gets shown.
+          validate: function(actions) {
+            //alert("validate");
+          },
+
+          // This is called when the button gets clicked
+          onClick: function() {
+            //alert("onClick");
+          },
+
+          payment: function () {
+            return paypalCheckoutInstance.createPayment({
+              // Your PayPal options here. For available options, see
+              // http://braintree.github.io/braintree-web/current/PayPalCheckout.html#createPayment
+              flow:     'checkout',
+              amount:   '1',
+              currency: 'JPY',
+              displayName: 'ベンゾ商店',
+              enableShippingAddress: true
+            });
+          },
+
+          onAuthorize: function (data, actions) {
+            return paypalCheckoutInstance.tokenizePayment(data)
+              .then(function (payload) {
+                // Submit `payload.nonce` to your server.
+
+                alert("data (check the console): \n " + JSON.stringify(data, null, 4));
+                alert("payload (check the console): \n " + JSON.stringify(payload, null, 4));
+                console.log("data: \n " + JSON.stringify(data, null, 4));
+                console.log("payload: \n " + JSON.stringify(payload, null, 4));
+            });
+          },
+
+          onCancel: function (data) {
+            console.log('checkout.js payment cancelled', JSON.stringify(data, 0, 2));
+          },
+
+          onError: function (err) {
+            console.error('checkout.js error', err);
+          }
+        }, '#paypal-button-login').then(function () {
+          // The PayPal button will be rendered in an html element with the id
+          // `paypal-button`. This function will be called when the PayPal button
+          // is set up and ready to be used.
+        });
+
+      });
+
+    });
+  </script>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
+
+  <h3>Smart Payment Button (Multiple button layout)</h3>
+  <a target="_blank" href="https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/customize-button/#multiple-button-layout">
+  See Doc.
+  </a>
+  <br/>
+  <a target="_blank" href="https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/customize-button/#supported-locales">
+  Supported Locales
+  </a>
+  <br/>
+  <br/>
+  <h4>Default</h4>
+  <div id="paypal-button-smart"></div>
+  <br/>
+  <h4>Japan</h4>
+  <div id="paypal-button-smart-JP"></div>
+  <br/>
+  <h4>UK</h4>
+  <div id="paypal-button-smart-GB"></div>
+  <br/>
+  <h4>China</h4>
+  <div id="paypal-button-smart-CN"></div>
+  <br/>
+  <h4>Germany</h4>
+  <div id="paypal-button-smart-DE"></div>
+  <br/>
+  <h4>US Merchant</h4>
+  <div id="paypal-button-smart-US-MS"></div>
+
+
+  <script>
+  function SPBRender(country) {
+    var lc =  '';
+    var cl = 'ARKw7FVGu0SEqDD70gAkMTRsf6dbejAQZp30O_zL52d797gy5E9hZIFZ6TNFiOBGfuHG-pr2mBRUs8ax';
+    var btn = '#paypal-button-smart';
+
+    //Setting buyer info (for Tangible)
+    /*var payer_info = {
+      "email": "benzookapi-buyerCS2@mail.com"
+    };
+    var bill_addr =  {
+      "line1": "請求住所１",
+      "line2": "請求住所２",
+      "city": "千代田区",
+      "country_code": "JP",
+      "postal_code": "999-9999",
+      "phone": "0312349999",
+      "state": "東京都"
+    };
+    var ship_addr = {
+      "recipient_name": "太郎 山田",
+      "line1": "住所１北青山",
+      "line2": "住所２ほげビル",
+      "city": "港区",
+      "country_code": "JP",
+      "postal_code": "123-4567",
+      "phone": "0322223333",
+      "state": "東京都"
+    };*/
+
+    //No buyer info (for Intagible)
+    var payer_info = {};
+    var bill_addr = {};
+    var ship_addr = {};
+
+    if (country == 'JP') {
+       lc = 'ja_JP';
+       btn = '#paypal-button-smart-JP';
+    }
+    if (country == 'GB') {
+       lc = 'en_GB';
+       btn = '#paypal-button-smart-GB';
+    }
+    if (country == 'CN') {
+       lc = 'zh_CN';
+       btn = '#paypal-button-smart-CN';
+    }
+    if (country == 'DE') {
+       lc = 'de_DE';
+       btn = '#paypal-button-smart-DE';
+    }
+    if (country == 'US-MS') {
+       lc = 'en_US';
+       btn = '#paypal-button-smart-US-MS';
+       cl = 'AYUk--VySS7d6CHBPVt2shahgOC-wjk2ddZ_MQTqD0TBFuDqPWwZEOR78EnPImAP97189PhW3sWtPyZX';
+    }
+
+    var payment = {
+      payment: {
+        payer: {
+          "payment_method": "paypal"
+        },
+        transactions: [
+          {
+            amount: { total: '1000', currency: 'JPY' }
+          }
+        ]
+      }
+    };
+    if (Object.keys(payer_info).length > 0) {
+      payment.payment.payer.payer_info = payer_info;
+    }
+    if (Object.keys(bill_addr).length > 0) {
+      payment.payment.payer.payer_info.billing_address = bill_addr;
+    }
+    if (Object.keys(ship_addr).length > 0) {
+      payment.payment.transactions[0].item_list = {
+        "shipping_address": ship_addr
+      };
+    }
+
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'production'
+
+        client: {
+            sandbox:    cl,
+            production: 'xxxx'
+        },
+
+        locale: lc,
+
+        style: {
+           layout: 'vertical',  // horizontal | vertical
+           size:   'medium',    // medium | large | responsive
+           shape:  'rect',      // pill | rect
+           color:  'gold'       // gold | blue | silver | black
+        },
+
+        funding: {
+            allowed: [ paypal.FUNDING.CARD, paypal.FUNDING.CREDIT, paypal.FUNDING.ELV],
+            disallowed: [ ]
+        },
+
+        commit: true, // Show a 'Pay Now' button
+
+        payment: function(data, actions) {
+            return actions.payment.create(
+                payment
+            );
+        },
+
+        onAuthorize: function(data, actions) {
+            return actions.payment.execute().then(function(payment) {
+
+                // The payment is complete!
+                // You can now show a confirmation message to the customer
+                console.log("data: \n " + JSON.stringify(data, null, 4));
+                console.log("payment: \n " + JSON.stringify(payment, null, 4));
+                alert("data (check the console): \n " + JSON.stringify(data, null, 4));
+                alert("payment (check the console): \n " + JSON.stringify(payment, null, 4));
+
+            }).catch(function(err) {
+               alert(JSON.stringify(err));
+            });
+        },
+
+        onError: function(err) {
+            // Show an error page here, when an error occurs
+            alert(JSON.stringify(err));
+        }
+
+    }, btn);
+  }
+  SPBRender('JP');
+  SPBRender('US');
+  SPBRender('GB');
+  SPBRender('CN');
+  SPBRender('DE');
+  SPBRender('US-MS');
+  </script>
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <a href="/">The latest Integration</a>
+  <br/>
+  <br/>
+  <a href="/old">Old Integration by Braintree SDK</a>

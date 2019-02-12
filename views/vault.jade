@@ -119,7 +119,7 @@ div#paypal.
                 inputDeviceData.setAttribute('value', myDeviceData);
                 form.appendChild(inputDeviceData);
 
-                form.setAttribute('action', '/checkoutVault');
+                form.setAttribute('action', '/old2/checkoutVault');
                 form.setAttribute('method', 'post');
                 form.submit();
 
@@ -260,7 +260,7 @@ div#paypal.
                   form.appendChild(inputId);
                 }
 
-                form.setAttribute('action', '/customer');
+                form.setAttribute('action', '/old2/customer');
                 form.setAttribute('method', 'post');
                 form.submit();
 
@@ -288,6 +288,6 @@ div#paypal.
 
 
   <br/>
-  <br/><a href="/">Try Checkout</a>
+  <br/><a href="/old2">Try Checkout</a>
   <br/>
-  <br/><a href="/hosted">Try Hosted Field</a>
+  <br/><a href="/old2/hosted">Try Hosted Field</a>
