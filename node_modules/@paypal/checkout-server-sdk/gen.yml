@@ -1,0 +1,6 @@
+---
+projectName: CheckoutNodeJSSDK
+language: nodejs
+sourcePath: lib
+testPath: spec
+apiVersioning: false

@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - 4
+  - 6
+  - 7
+  - 8
+before_script: npm install
+script: npm test
+notifications:
+  email:
+    recipients:
+    - external-ci-notifications+braintreehttp@getbraintree.com
+    on_success: change

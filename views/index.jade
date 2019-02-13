@@ -1,0 +1,106 @@
+div#paypalIndex.
+  <script src="https://www.paypal.com/sdk/js?client-id=#{client_id}&currency=#{currency}">
+  </script> 
+
+  <h1><a href="https://developer.paypal.com/docs/checkout/" target="_blank">PayPal Checkout</a></h1>
+  
+  <a href="https://developer.paypal.com/docs/api/orders/v2/" target="_blank">Order API</a>
+  <br/>
+  <a href="https://developer.paypal.com/docs/api/payments/v2/" target="_blank">Payment API</a>
+  <br/>
+  <br/>
+
+  <h2>BASIC INTEGRATION</h2>
+  The button size needs set as its container style sheet.
+  <div style="border: 1px solid gray; padding: 10px; width: 300px;">    
+    <div id="paypal-button-container"></div>
+  </div>
+
+  <script>
+    // Basic integration
+    paypal.Buttons({
+      style: {
+        layout:  'vertical',
+        color:   'gold',
+        shape:   'rect',
+        label:   'paypal'
+      },
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: '1000'
+            }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        // Capture the funds from the transaction
+        return actions.order.capture().then(function(details) {
+          // Show a success message to your buyer
+          //alert('Transaction completed by ' + details.payer.name.given_name);
+
+          console.log("details: \n " + JSON.stringify(details, null, 4));
+          alert("details: \n " + JSON.stringify(details, null, 4));
+        });
+      }
+    }).render('#paypal-button-container');
+  </script>
+
+  <h2>SERVER INTEGRATION</h2>
+  The button size needs set as its container style sheet.
+  <div style="border: 1px solid gray; padding: 10px; width: 300px;">    
+    <div id="paypal-button-container-server"></div>
+  </div>
+
+  <script>
+    // Server integration
+    paypal.Buttons({
+      style: {
+        layout:  'vertical',
+        color:   'gold',
+        shape:   'rect',
+        label:   'paypal'
+      },
+      createOrder: function() {
+        return fetch('/createorder', {
+          method: "POST"
+        }).then(function(res) {
+          return res.json();
+        }).then(function(data) {
+          return data.orderID;
+        });
+      },
+      onApprove: function(data) {
+        return fetch('/captureorder', {
+          method: "POST",
+          body: JSON.stringify({orderID: data.orderID,}),
+          headers : new Headers({ "Content-type" : "application/json" })
+        }).then(function(res) {
+          return res.json();
+        }).then(function(details) {
+          //console.log("captureorder-details: \n " + JSON.stringify(details, null, 4));
+          alert("captureorder-details: \n " + JSON.stringify(details, null, 4));
+        });
+      }
+    }).render('#paypal-button-container-server');
+  </script>
+
+  <br/>
+  <br/>
+  <br/>  
+  <br/>
+  <br/>
+  <br/> 
+  <br/>
+  <br/>
+  <br/> 
+  <a href="/hostedpp">PayPal Hosted</a>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/> 
+  <a href="/old2">Old Integration</a>
+  
+  

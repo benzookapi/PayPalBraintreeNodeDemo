@@ -1,0 +1,6 @@
+---
+  extends: braintree/server
+  parserOptions:
+    ecmaVersion: 6
+  globals:
+    Promise: 0
