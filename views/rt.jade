@@ -26,10 +26,7 @@ div#paypalRT.
       createBillingAgreement: function() {
         return fetch('/agreetoken', {
           method: "POST",
-          mode: 'cors',
-          headers: new Headers({           
-            'Access-Control-Allow-Origin': '*'
-          })
+          mode: 'cors'
         }).then(function(res) {
           return res.json();
         }).then(function(data) {

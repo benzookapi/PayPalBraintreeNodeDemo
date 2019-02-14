@@ -190,7 +190,6 @@ var call_rest = function(path, json, method = 'GET', access_token = null, callba
       bearer: access_token
     };
     headers['Content-Type'] = 'application/json';
-    headers['Access-Control-Allow-Origin'] = '*';
     options.json = json;
   }
   options.headers = headers;
