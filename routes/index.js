@@ -23,7 +23,7 @@ const CURRENCY = "JPY";
 console.log(`CURRENCY: ${CURRENCY}`);
 
 var buyer_country_param = "";
-if (process.env.PP_BUYER_COUNTRY !== undefined && process.env.PP_PROD != 'true') buyer_country_param = "&buyer-country=" + process.env.PP_BUYER_COUNTRY;
+if (process.env.PP_BUYER_COUNTRY !== undefined && process.env.PP_PROD != 'true') buyer_country_param = "buyer-country=" + process.env.PP_BUYER_COUNTRY;
 
 // Direct API Call
 var s = 'sandbox.';
@@ -36,6 +36,23 @@ console.log(`buyer_country_param: ${buyer_country_param}`);
 
 router.get('/', function(req, res, next) { 
   res.render('index', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param});    
+});
+
+router.post('/verifyorder', async function(req, res) {
+  const orderID = req.body.orderID;
+  console.error("orderID " + orderID);
+  const request = new paypal.orders.OrdersGetRequest(orderID);
+  let order;
+  try {
+    order = await client.execute(request);
+  } catch (err) {
+    console.error(err);
+    return res.send("<h2>ERROR!</h2>" + JSON.stringify(err, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+  }
+  //if (order.result.purchase_units[0].amount.value !== '220.00') {
+  //  return res.send(400);
+  //}
+  res.send("<h2>SUCCESS!</h2>" + JSON.stringify(order, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
 });
 
 router.post('/createorder', async function(req, res) {
@@ -75,10 +92,10 @@ router.post('/captureorder', async function(req, res) {
         .payments.captures[0].id;
     //await database.saveCaptureID(captureID);
   } catch (err) {
-    console.error(err);
-    return res.status(500).json(err);
-  }
-  res.status(200).json(capture); 
+    console.error(err);    
+    return res.send("<h2>ERROR!</h2>" + JSON.stringify(err, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+  }  
+  res.send("<h2>SUCCESS!</h2>" + JSON.stringify(capture, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
 });
 
 // *********  Direct Call Integrations ********* //

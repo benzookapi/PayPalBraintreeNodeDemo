@@ -1,13 +1,13 @@
 div#paypalIndex.
-  <script src="https://www.paypal.com/sdk/js?client-id=#{client_id}&currency=#{currency}#{buyer_country_param}">
+  <script src="https://www.paypal.com/sdk/js?client-id=#{client_id}&currency=#{currency}&#{buyer_country_param}">
   </script> 
 
   <h1><a href="https://developer.paypal.com/docs/checkout/" target="_blank">PayPal Checkout</a></h1>
 
   <a href="https://github.com/paypal/paypal-checkout-components" target="_blank">JavaScript SDK GitHub</a>
   <br/>
-
   <a href="https://github.com/paypal/Checkout-Nodejs-SDK/" target="_blank">Server Node SDK Github</a>
+  <br/>
   <br/>
   
   <a href="https://developer.paypal.com/docs/api/orders/v2/" target="_blank">Order API</a>
@@ -15,12 +15,12 @@ div#paypalIndex.
   <a href="https://developer.paypal.com/docs/api/payments/v2/" target="_blank">Payment API</a>
   <br/>
   <br/>
-  <a href="https://github.com/paypal/paypal-checkout-components" target="_blank">JavaScript SDK GitHub</a>
+  <a href="https://github.com/benzookapi/PayPalBraintreeNodeDemo" target="_blank">Source Code</a>
   <br/>
 
   <h2>BASIC INTEGRATION</h2>
   The button size needs set as its container style sheet.
-  <div style="border: 1px solid gray; padding: 10px; width: 300px;">    
+  <div style="border: 1px solid gray; padding: 10px; width: 300px;">   
     <div id="paypal-button-container"></div>
   </div>
 
@@ -47,8 +47,19 @@ div#paypalIndex.
         return actions.order.capture().then(function(details) {
           // Show a success message to your buyer
           //alert('Transaction completed by ' + details.payer.name.given_name);
-          console.log("details: \n " + JSON.stringify(details, null, 4));
-          alert("details: \n " + JSON.stringify(details, null, 4));
+          console.log("data: \n " + JSON.stringify(data, null, 4));     
+          console.log("details: \n " + JSON.stringify(details, null, 4));      
+
+          // Call your server to save the transaction
+          return fetch('/verifyorder', {
+            method: 'POST',
+            body: JSON.stringify({orderID: data.orderID}),
+            headers : new Headers({"Content-type" : "application/json"})
+          }).then(function(res) {
+            return res.text();
+          }).then(function(data) {
+            document.getElementById('res').innerHTML = data;
+          });
         });
       },
       onCancel: function (data) {
@@ -90,13 +101,12 @@ div#paypalIndex.
       onApprove: function(data, actions) {
         return fetch('/captureorder', {
           method: "POST",
-          body: JSON.stringify({orderID: data.orderID,}),
-          headers : new Headers({ "Content-type" : "application/json" })
+          body: JSON.stringify({orderID: data.orderID}),
+          headers : new Headers({"Content-type" : "application/json"})
         }).then(function(res) {
-          return res.json();
-        }).then(function(details) {          
-          console.log("captureorder-details: \n " + JSON.stringify(details, null, 4));
-          alert("captureorder-details: \n " + JSON.stringify(details, null, 4));               
+          return res.text();
+        }).then(function(data) {          
+          document.getElementById('res').innerHTML = data;     
         });
       },
       onCancel: function (data) {
@@ -110,6 +120,9 @@ div#paypalIndex.
       }
     }).render('#paypal-button-container-server');
   </script>
+
+  <br/>
+  <div id="res"></div>
 
   <br/>
   <br/>
