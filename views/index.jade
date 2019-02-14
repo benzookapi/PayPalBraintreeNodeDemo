@@ -1,8 +1,14 @@
 div#paypalIndex.
-  <script src="https://www.paypal.com/sdk/js?client-id=#{client_id}&currency=#{currency}">
+  <script src="https://www.paypal.com/sdk/js?client-id=#{client_id}&currency=#{currency}#{buyer_country_param}">
   </script> 
 
   <h1><a href="https://developer.paypal.com/docs/checkout/" target="_blank">PayPal Checkout</a></h1>
+
+  <a href="https://github.com/paypal/paypal-checkout-components" target="_blank">JavaScript SDK GitHub</a>
+  <br/>
+
+  <a href="https://github.com/paypal/Checkout-Nodejs-SDK/" target="_blank">Server Node SDK Github</a>
+  <br/>
   
   <a href="https://developer.paypal.com/docs/api/orders/v2/" target="_blank">Order API</a>
   <br/>
@@ -79,7 +85,7 @@ div#paypalIndex.
         }).then(function(res) {
           return res.json();
         }).then(function(details) {
-          //console.log("captureorder-details: \n " + JSON.stringify(details, null, 4));
+          console.log("captureorder-details: \n " + JSON.stringify(details, null, 4));
           alert("captureorder-details: \n " + JSON.stringify(details, null, 4));
         });
       }
@@ -92,12 +98,6 @@ div#paypalIndex.
   <br/>
   <br/>
   <br/> 
-  <br/>
-  <br/>
-  <br/> 
-  <a href="/hostedpp">PayPal Hosted</a>
-  <br/>
-  <br/>
   <br/>
   <br/>
   <br/> 

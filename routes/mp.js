@@ -2,14 +2,14 @@ var express = require('express');
 var request = require('request');
 var router = express.Router();
 
-var CLIENT_ID = process.env.PP_MP_CLIENT_ID;
-var SECRET = process.env.PP_MP_SECRET;
+var CLIENT_ID_MP = process.env.PP_MP_CLIENT_ID;
+var SECRET_MP = process.env.PP_MP_SECRET;
 var PARTNER_ID = process.env.PP_MP_PARTNER_ID;
-var ENV = process.env.PP_MP_ENV;
-console.log(`CLIENT_ID: ${CLIENT_ID}`);
-console.log(`SECRET: ${SECRET}`);
+var ENV_MP = process.env.PP_MP_ENV;
+console.log(`CLIENT_ID_MP: ${CLIENT_ID_MP}`);
+console.log(`SECRET_MP: ${SECRET_MP}`);
 console.log(`PARTNER_ID: ${PARTNER_ID}`);
-console.log(`ENV: ${ENV}`);
+console.log(`ENV_MP: ${ENV_MP}`);
 
 var RETURN_URL = 'http://localhost:3000/mp/order';
 if (process.env.PP_MP_RETURN_URL !== undefined) {
@@ -19,14 +19,14 @@ var LOGO_URL = '';
 var MERCHANT_ID = `benzo${new Date().getTime()}`;
 
 var s = 'sandbox.';
-if (ENV == 'production') s = '';
+if (ENV_MP == 'production') s = '';
 
-var API_ROOT = `https://api.${s}paypal.com/v1/`;
-console.log(`API_ROOT: ${API_ROOT}`);
+var API_ROOT_MP = `https://api.${s}paypal.com/v1/`;
+console.log(`API_ROOT_MP: ${API_ROOT_MP}`);
 
 var URL_ONBOARD = `https://www.${s}paypal.com/us/merchantsignup/partner/onboardingentry?channelId=partner&productIntentId=addipmt` +
   `&partnerId=${PARTNER_ID}&returnToPartnerUrl=${RETURN_URL}&integrationType=TO&showPermissions=true` +
-  `&features=PAYMENT,REFUND,DELAY_FUNDS_DISBURSEMENT,READ_SELLER_DISPUTE,UPDATE_SELLER_DISPUTE&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID}`;
+  `&features=PAYMENT,REFUND,DELAY_FUNDS_DISBURSEMENT,READ_SELLER_DISPUTE,UPDATE_SELLER_DISPUTE&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID_MP}`;
 console.log(`URL_ONBOARD: ${URL_ONBOARD}`);
 
 var m_generated_key = new Date().getTime();
@@ -184,7 +184,7 @@ router.get('/', function(req, res, next) {
             "integration_type": "THIRD_PARTY"
           },
           "rest_third_party_details": {
-            "partner_client_id": CLIENT_ID,
+            "partner_client_id": CLIENT_ID_MP,
             "feature_list": [
               "PAYMENT",
               "REFUND",
@@ -227,12 +227,12 @@ router.get('/order', function(req, res, next) {
       call_rest(`customer/partners/${PARTNER_ID}/merchant-integrations/${receiver}`, {}, 'GET', access_token, function(api_res) {
         console.log(JSON.stringify(api_res, null ,4));
         body = JSON.stringify(api_res.body);
-        res.render('mp_order', { env: ENV, receiver: receiver, body: body,
+        res.render('mp_order', { env: ENV_MP, receiver: receiver, body: body,
           order_url: `${RETURN_URL}/create?merchantIdInPayPal=${receiver}`, pay_url: `${RETURN_URL}/pay`});
       });
     });
   } else {
-    res.render('mp_order', { env: ENV, receiver: receiver, body, order_url: '', pay_url: ''});
+    res.render('mp_order', { env: ENV_MP, receiver: receiver, body, order_url: '', pay_url: ''});
   }
 });
 
@@ -342,15 +342,15 @@ var call_rest = function(path, json, method = 'GET', access_token = null, callba
     'Accept-Language': 'en_US'
   };
   var options = {
-    url: `${API_ROOT}${path}`,
+    url: `${API_ROOT_MP}${path}`,
     method: method
     //json: true,
     //form: json
   };
   if (access_token === null) {
     options.auth = {
-      user: CLIENT_ID,
-      password: SECRET
+      user: CLIENT_ID_MP,
+      password: SECRET_MP
     };
     options.form = json;
   } else {
