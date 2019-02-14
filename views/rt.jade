@@ -25,7 +25,13 @@ div#paypalRT.
       },      
       createBillingAgreement: function() {
         return fetch('/agreetoken', {
-          method: "POST"
+          method: "POST",
+          headers: new Headers({
+            'Access-Control-Allow-Credentials' : true,
+            'Access-Control-Allow-Origin':'*',
+            'Access-Control-Allow-Methods':'POST',
+            'Access-Control-Allow-Headers':'application/json'
+          })
         }).then(function(res) {
           return res.json();
         }).then(function(data) {
