@@ -1,4 +1,61 @@
 div#paypalRT.
-  <script src="https://www.paypal.com/sdk/js?components=buttons&client-id=#{client_id}&currency=#{currency}&#{buyer_country_param}"></script>
+  <script src="https://www.paypal.com/sdk/js?components=buttons&client-id=#{client_id}&currency=#{currency}&#{buyer_country_param}&vault=true&commit=false"></script>
+
+  <h1><a href="https://developer.paypal.com/docs/checkout/reference/upgrade-integration/#billing-agreement-integrations-with-v1billing-agreementsagreement-tokens" target="_blank">Billing Agreement Creation</a></h1>
+
+  <a href="https://developer.paypal.com/docs/checkout/integration-features/customize-button/" target="_blank">Customize Button</a>
+  <br/>
+
+  <h2>RT INTEGRATION V1</h2>
+  The button size needs set as its container style sheet.
+  <div style="border: 1px solid gray; padding: 10px; width: 300px;">    
+    <div id="paypal-button-container-server"></div>
+    <label style="text-align: center; display: block;">Login with PayPal</label>
+  </div>
+
+  <script>
+    // Server integration
+    paypal.Buttons({
+      style: {
+        layout:  'horizontal',
+        color:   'blue',
+        shape:   'rect',
+        label:   'paypal',
+        tagline: false
+      },      
+      createBillingAgreement: function() {
+        return fetch('/agreetoken', {
+          method: "POST"
+        }).then(function(res) {
+          return res.json();
+        }).then(function(data) {
+          return data.billingToken;
+        });
+      },      
+      onApprove: function(data) {
+        return fetch('/createbilling', {
+          method: "POST",
+          body: JSON.stringify({billingToken: data.billingToken}),
+          headers : new Headers({"Content-type" : "application/json"})
+        }).then(function(res) {
+          return res.text();
+        }).then(function(data) {          
+          document.getElementById('res').innerHTML = data;     
+        });
+      },
+      onCancel: function (data) {
+        // Show a cancel page, or return to cart
+        alert("Canceled!");
+      },
+      onError: function (err) {
+        // Show an error page here, when an error occurs
+        console.log("err: \n " + JSON.stringify(err, null, 4));
+        alert("Error!");
+      }
+    }).render('#paypal-button-container-server');
+  </script>
+
+  <br/>
+  <div id="res"></div>
 
   

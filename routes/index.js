@@ -47,12 +47,12 @@ router.post('/verifyorder', async function(req, res) {
     order = await client.execute(request);
   } catch (err) {
     console.error(err);
-    return res.send("<h2>ERROR!</h2>" + JSON.stringify(err, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+    return res.send("<h2>ERROR!</h2>" + JSON.stringify(err, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;"));
   }
   //if (order.result.purchase_units[0].amount.value !== '220.00') {
   //  return res.send(400);
   //}
-  res.send("<h2>SUCCESS!</h2>" + JSON.stringify(order, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+  res.send("<h2>SUCCESS!</h2>" + JSON.stringify(order, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;"));
 });
 
 router.post('/createorder', async function(req, res) {
@@ -93,16 +93,64 @@ router.post('/captureorder', async function(req, res) {
     //await database.saveCaptureID(captureID);
   } catch (err) {
     console.error(err);    
-    return res.send("<h2>ERROR!</h2>" + JSON.stringify(err, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+    return res.send("<h2>ERROR!</h2>" + JSON.stringify(err, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;"));
   }  
-  res.send("<h2>SUCCESS!</h2>" + JSON.stringify(capture, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;") + "<br/><br/><a href=\"/\">Try again</a>");
+  res.send("<h2>SUCCESS!</h2>" + JSON.stringify(capture, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;"));
 });
 
 // *********  Direct Call Integrations ********* //
 
 router.get('/rt', function(req, res, next) {
+  res.render('rt', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param});    
+});
+
+router.post('/agreetoken', function(req, res) {
   get_token(function(access_token) {
-    res.render('rt', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param});    
+    call_rest('v1/billing-agreements/agreement-tokens', {
+      "description": "My Billing Agreement!!",
+      "shipping_address":
+      {
+        "line1": "Aoyama -1",
+        "city": "Minato-ku",
+        "state": "Tokyo",
+        "postal_code": "1234567",
+        "country_code": "JP",
+        "recipient_name": "RT Taro"
+      },
+      "payer":
+      {
+        "payment_method": "PAYPAL"
+      },
+      "plan":
+      {
+        "type": "MERCHANT_INITIATED_BILLING",
+        "merchant_preferences":
+        {
+          "return_url": "https://www.paypal.com/checkoutnow/error",
+          "cancel_url": "https://www.paypal.com/checkoutnow/error",
+          "accepted_pymt_type": "INSTANT",
+          "skip_shipping_address": false,
+          "immutable_shipping_address": true
+        }
+      }
+    }, 'POST', access_token, function(api_res) {
+      console.log(JSON.stringify(api_res, null ,4));
+      res.status(200).json({
+        billingToken: api_res.body.token_id
+      }); 
+    });    
+  });
+});
+
+router.post('/createbilling', function(req, res) {
+  const billingToken = req.body.billingToken;
+  get_token(function(access_token) {
+    call_rest('v1/billing-agreements/agreements', {
+        "token_id": billingToken
+      }, 'POST', access_token, function(api_res) {
+      console.log(JSON.stringify(api_res, null ,4));
+      res.send("<h2>SUCCESS!</h2>" + JSON.stringify(api_res.body, null, 4).replace(/\n/g, "\n<br/>").replace(/ /g, " &nbsp;")+ "<br/><br/><h2><a href=\"https://jo-pp-ruby-demo.herokuapp.com/rest\" target=\"_blank\">Use your billing_agreement_id in REST payment</a></h2>");
+    });    
   });
 });
 

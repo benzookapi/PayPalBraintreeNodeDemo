@@ -89,7 +89,7 @@ div#paypalIndex.
         shape:   'rect',
         label:   'paypal'
       },
-      createOrder: function(data, actions) {
+      createOrder: function() {
         return fetch('/createorder', {
           method: "POST"
         }).then(function(res) {
@@ -98,7 +98,7 @@ div#paypalIndex.
           return data.orderID;
         });
       },
-      onApprove: function(data, actions) {
+      onApprove: function(data) {
         return fetch('/captureorder', {
           method: "POST",
           body: JSON.stringify({orderID: data.orderID}),

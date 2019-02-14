@@ -11,9 +11,9 @@ console.log(`SECRET_MP: ${SECRET_MP}`);
 console.log(`PARTNER_ID: ${PARTNER_ID}`);
 console.log(`ENV_MP: ${ENV_MP}`);
 
-var RETURN_URL = 'http://localhost:3000/mp/order';
+var RETURN_URL_MP = 'http://localhost:3000/mp/order';
 if (process.env.PP_MP_RETURN_URL !== undefined) {
-  RETURN_URL = process.env.PP_MP_RETURN_URL;
+  RETURN_URL_MP = process.env.PP_MP_RETURN_URL;
 }
 var LOGO_URL = '';
 var MERCHANT_ID = `benzo${new Date().getTime()}`;
@@ -25,7 +25,7 @@ var API_ROOT_MP = `https://api.${s}paypal.com/v1/`;
 console.log(`API_ROOT_MP: ${API_ROOT_MP}`);
 
 var URL_ONBOARD = `https://www.${s}paypal.com/us/merchantsignup/partner/onboardingentry?channelId=partner&productIntentId=addipmt` +
-  `&partnerId=${PARTNER_ID}&returnToPartnerUrl=${RETURN_URL}&integrationType=TO&showPermissions=true` +
+  `&partnerId=${PARTNER_ID}&returnToPartnerUrl=${RETURN_URL_MP}&integrationType=TO&showPermissions=true` +
   `&features=PAYMENT,REFUND,DELAY_FUNDS_DISBURSEMENT,READ_SELLER_DISPUTE,UPDATE_SELLER_DISPUTE&partnerLogoUrl=${LOGO_URL}&merchantId=${MERCHANT_ID}&partnerClientId=${CLIENT_ID_MP}`;
 console.log(`URL_ONBOARD: ${URL_ONBOARD}`);
 
@@ -197,8 +197,8 @@ router.get('/', function(req, res, next) {
       }],
       "web_experience_preference": {
        "partner_logo_url": LOGO_URL,
-       "return_url": RETURN_URL,
-       "action_renewal_url": RETURN_URL
+       "return_url": RETURN_URL_MP,
+       "action_renewal_url": RETURN_URL_MP
       },
       "collected_consents": [
        {
@@ -228,7 +228,7 @@ router.get('/order', function(req, res, next) {
         console.log(JSON.stringify(api_res, null ,4));
         body = JSON.stringify(api_res.body);
         res.render('mp_order', { env: ENV_MP, receiver: receiver, body: body,
-          order_url: `${RETURN_URL}/create?merchantIdInPayPal=${receiver}`, pay_url: `${RETURN_URL}/pay`});
+          order_url: `${RETURN_URL_MP}/create?merchantIdInPayPal=${receiver}`, pay_url: `${RETURN_URL_MP}/pay`});
       });
     });
   } else {
@@ -300,8 +300,8 @@ router.post('/order/create', function(req, res) {
         "postback_data": []
       },
       "redirect_urls": {
-        "return_url": RETURN_URL,
-        "cancel_url": RETURN_URL
+        "return_url": RETURN_URL_MP,
+        "cancel_url": RETURN_URL_MP
       }
     };
     console.log(JSON.stringify(order_json, null, 4));
