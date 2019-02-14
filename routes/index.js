@@ -56,7 +56,7 @@ router.post('/createorder', async function(req, res) {
     console.log(JSON.stringify(order, null, 4));
   } catch (err) {
     console.error(err);
-    return res.send(500);
+    return res.status(500).json(err);
   }  
   res.status(200).json({
     orderID: order.result.id
@@ -76,7 +76,7 @@ router.post('/captureorder', async function(req, res) {
     //await database.saveCaptureID(captureID);
   } catch (err) {
     console.error(err);
-    return res.send(500);
+    return res.status(500).json(err);
   }
   res.status(200).json(capture); 
 });

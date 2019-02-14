@@ -15,6 +15,8 @@ div#paypalIndex.
   <a href="https://developer.paypal.com/docs/api/payments/v2/" target="_blank">Payment API</a>
   <br/>
   <br/>
+  <a href="https://github.com/paypal/paypal-checkout-components" target="_blank">JavaScript SDK GitHub</a>
+  <br/>
 
   <h2>BASIC INTEGRATION</h2>
   The button size needs set as its container style sheet.
@@ -45,10 +47,18 @@ div#paypalIndex.
         return actions.order.capture().then(function(details) {
           // Show a success message to your buyer
           //alert('Transaction completed by ' + details.payer.name.given_name);
-
           console.log("details: \n " + JSON.stringify(details, null, 4));
           alert("details: \n " + JSON.stringify(details, null, 4));
         });
+      },
+      onCancel: function (data) {
+        // Show a cancel page, or return to cart
+        alert("Canceled!");
+      },
+      onError: function (err) {
+        // Show an error page here, when an error occurs
+        console.log("err: \n " + JSON.stringify(err, null, 4));
+        alert("Error!");
       }
     }).render('#paypal-button-container');
   </script>
@@ -68,7 +78,7 @@ div#paypalIndex.
         shape:   'rect',
         label:   'paypal'
       },
-      createOrder: function() {
+      createOrder: function(data, actions) {
         return fetch('/createorder', {
           method: "POST"
         }).then(function(res) {
@@ -77,17 +87,26 @@ div#paypalIndex.
           return data.orderID;
         });
       },
-      onApprove: function(data) {
+      onApprove: function(data, actions) {
         return fetch('/captureorder', {
           method: "POST",
           body: JSON.stringify({orderID: data.orderID,}),
           headers : new Headers({ "Content-type" : "application/json" })
         }).then(function(res) {
           return res.json();
-        }).then(function(details) {
+        }).then(function(details) {          
           console.log("captureorder-details: \n " + JSON.stringify(details, null, 4));
-          alert("captureorder-details: \n " + JSON.stringify(details, null, 4));
+          alert("captureorder-details: \n " + JSON.stringify(details, null, 4));               
         });
+      },
+      onCancel: function (data) {
+        // Show a cancel page, or return to cart
+        alert("Canceled!");
+      },
+      onError: function (err) {
+        // Show an error page here, when an error occurs
+        console.log("err: \n " + JSON.stringify(err, null, 4));
+        alert("Error!");
       }
     }).render('#paypal-button-container-server');
   </script>
