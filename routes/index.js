@@ -135,6 +135,8 @@ router.post('/agreetoken', function(req, res) {
       }
     }, 'POST', access_token, function(api_res) {
       console.log(JSON.stringify(api_res, null ,4));
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       res.status(200).json({
         billingToken: api_res.body.token_id
       }); 
