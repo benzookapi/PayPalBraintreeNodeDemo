@@ -1,9 +1,5 @@
 div#paypalRT.
-  <!--<script src="https://www.paypal.com/sdk/js?components=buttons&client-id=#{client_id}&currency=#{currency}&#{buyer_country_param}&vault=true&commit=false&&disable-funding=credit,card"></script>-->
-
-  <script src="https://www.paypal.com/sdk/js?components=buttons&client-id=#{client_id}&vault=true&locale=en_US&debug=true&currency=USD&buyer-country=US"></script>
-
-  
+  <script src="https://www.paypal.com/sdk/js?components=buttons&client-id=#{client_id}&currency=#{currency}!{buyer_country_param}&vault=true&commit=false&disable-funding=credit,card"></script>
 
   <h1><a href="https://developer.paypal.com/docs/checkout/reference/upgrade-integration/#billing-agreement-integrations-with-v1billing-agreementsagreement-tokens" target="_blank">Billing Agreement Creation</a></h1>
 
@@ -33,7 +29,6 @@ div#paypalRT.
         }).then(function(res) {
           return res.json();
         }).then(function(data) {
-          console.log("data: " + JSON.stringify(data, null, 4));
           return data.billingToken;
         });
       },      

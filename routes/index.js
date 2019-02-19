@@ -23,7 +23,7 @@ const CURRENCY = "JPY";
 console.log(`CURRENCY: ${CURRENCY}`);
 
 var buyer_country_param = "";
-if (process.env.PP_BUYER_COUNTRY !== undefined && process.env.PP_PROD != 'true') buyer_country_param = "buyer-country=" + process.env.PP_BUYER_COUNTRY;
+if (process.env.PP_BUYER_COUNTRY !== undefined && process.env.PP_PROD != 'true') buyer_country_param = "&buyer-country=" + process.env.PP_BUYER_COUNTRY;
 
 // Direct API Call
 var s = 'sandbox.';
@@ -31,6 +31,12 @@ if (process.env.PP_PROD == 'true') s = '';
 const API_ROOT = `https://api.${s}paypal.com/`;
 console.log(`API_ROOT: ${API_ROOT}`);
 console.log(`buyer_country_param: ${buyer_country_param}`);
+
+// *********  Simple Integrations ********* //
+
+router.get('/simple', function(req, res, next) {
+  res.render('simple', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param});    
+});
 
 // *********  SDK Integrations ********* //
 
@@ -135,8 +141,6 @@ router.post('/agreetoken', function(req, res) {
       }
     }, 'POST', access_token, function(api_res) {
       console.log(JSON.stringify(api_res, null ,4));
-      //res.header("Access-Control-Allow-Origin", "*");
-      //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       res.status(200).json({
         billingToken: api_res.body.token_id
       }); 
