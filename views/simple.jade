@@ -1,0 +1,31 @@
+div#paypalClient.
+  <h1><a href="https://developer.paypal.com/docs/checkout/#" target="_blank">PayPal Checkout (Simple integration)</a></h1>
+
+  <a href="https://developer.paypal.com/docs/checkout/reference/customize-sdk/" target="_blank">Customize SDK</a>
+  <br/>
+  <br/>
+  <br/>
+
+  <div id="paypal-button-container"></div>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=#{client_id}&currency=#{currency}!{buyer_country_param}"></script>
+  <script>paypal.Buttons({
+    createOrder: function(data, actions) {
+      // Set up the transaction
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '222'
+          }
+        }]
+      });
+    }
+  }).render('#paypal-button-container');</script>
+
+  <br/>
+  <br/>
+  <br/> 
+  <a href="/">Top</a> 
+  
+
+  
