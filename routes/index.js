@@ -25,6 +25,12 @@ console.log(`CURRENCY: ${CURRENCY}`);
 var buyer_country_param = "";
 if (process.env.PP_BUYER_COUNTRY !== undefined && process.env.PP_PROD != 'true') buyer_country_param = "&buyer-country=" + process.env.PP_BUYER_COUNTRY;
 
+var locale_param = "";
+if (process.env.PP_LOCALE !== undefined) locale_param = "&locale=" + process.env.PP_LOCALE;
+
+var merchant_id_param = "";
+if (process.env.PP_MERCHANT_ID !== undefined) merchant_id_param = "&merchant-id=" + process.env.PP_MERCHANT_ID;
+
 // Direct API Call
 var s = 'sandbox.';
 if (process.env.PP_PROD == 'true') s = '';
@@ -35,13 +41,13 @@ console.log(`buyer_country_param: ${buyer_country_param}`);
 // *********  Simple Integrations ********* //
 
 router.get('/simple', function(req, res, next) {
-  res.render('simple', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param});    
+  res.render('simple', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param, locale_param, merchant_id_param});    
 });
 
 // *********  SDK Integrations ********* //
 
 router.get('/', function(req, res, next) { 
-  res.render('index', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param});    
+  res.render('index', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param, locale_param, merchant_id_param});    
 });
 
 router.post('/verifyorder', async function(req, res) {
@@ -107,7 +113,7 @@ router.post('/captureorder', async function(req, res) {
 // *********  Direct Call Integrations ********* //
 
 router.get('/rt', function(req, res, next) {
-  res.render('rt', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param});    
+  res.render('rt', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param, locale_param, merchant_id_param});    
 });
 
 router.post('/agreetoken', function(req, res) {
@@ -162,7 +168,7 @@ router.post('/createbilling', function(req, res) {
 
 router.get('/hostedpp', function(req, res, next) {
   get_token(function(access_token) {
-    res.render('hostedpp', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param});    
+    res.render('hostedpp', {client_id: CLIENT_ID, currency: CURRENCY, buyer_country_param: buyer_country_param, locale_param, merchant_id_param});    
   });
 });
 

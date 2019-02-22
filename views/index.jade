@@ -1,5 +1,5 @@
 div#paypalIndex.
-  <script src="https://www.paypal.com/sdk/js?client-id=#{client_id}&currency=#{currency}!{buyer_country_param}">
+  <script src="https://www.paypal.com/sdk/js?client-id=#{client_id}&currency=#{currency}!{buyer_country_param}!{locale_param}!{merchant_id_param}">
   </script> 
 
   <h1><a href="https://developer.paypal.com/docs/checkout/" target="_blank">PayPal Checkout</a></h1>
@@ -37,9 +37,62 @@ div#paypalIndex.
         return actions.order.create({
           purchase_units: [{
             amount: {
-              value: '1000'
+              value: '1000',
+              breakdown: {
+                item_total: {
+                  currency_code: "#{currency}",
+                  value: '1000'
+                }
+              }
+            },
+            items: [{
+              name: "サンプル商品",
+              unit_amount: {
+                currency_code: "#{currency}",
+                value: '1000'
+              },
+              quantity: '1'
+            }],
+            shipping: {
+              name: {
+                full_name: "Shipping太郎 ペイパル"
+              },
+              address: {
+                address_line_1: "Shipping 住所１",
+                address_line_2: "Shipping 住所２",
+                admin_area_2: "港区",
+                admin_area_1: "東京都",
+                postal_code: "1234567",
+                country_code: "JP"
+              }
             }
-          }]
+          }],
+          payer: {
+              name: {
+                given_name: "Payer Given Name",
+                surname: "Payer Surname"
+              },
+              email_address: "benzookapi-buyer_payer@mail.com",
+              phone: {
+                phone_type: "MOBILE",
+                phone_number: {
+                  national_number: "818012345678"
+                }
+              },
+              birth_date: "1980-01-01",
+              address: {
+                address_line_1: "Payer 住所１",
+                address_line_2: "Payer 住所２",
+                admin_area_2: "港区",
+                admin_area_1: "東京都",
+                postal_code: "1234567",
+                country_code: "JP"
+              }
+          },
+          application_context: {
+            //landing_page: 'BILLING',
+            brand_name: "BENZO CHECKOUT"            
+          }
         });
       },
       onApprove: function(data, actions) {
