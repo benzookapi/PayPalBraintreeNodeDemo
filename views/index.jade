@@ -174,6 +174,46 @@ div#paypalIndex.
     }).render('#paypal-button-container-server');
   </script>
 
+  <h2>SERVER INTEGRATION (2 step)</h2>
+  The button size needs set as its container style sheet.
+  <div style="border: 1px solid gray; padding: 10px; width: 300px;">    
+    <div id="paypal-button-container-server-2step"></div>
+  </div>
+
+  <script>
+    // Server integration
+    paypal.Buttons({
+      style: {
+        layout:  'vertical',
+        color:   'gold',
+        shape:   'rect',
+        label:   'paypal'
+      },
+      createOrder: function() {
+        return fetch('/createorder', {
+          method: "POST"
+        }).then(function(res) {
+          return res.json();
+        }).then(function(data) {
+          return data.orderID;
+        });
+      },
+      onApprove: function(data) {
+        //Capture in the next page
+        document.getElementById('res').innerHTML = `<form action='/captureorder' method='POST'><input name='orderID' value='${data.orderID}'><br/><input type='submit' value='Capture in 2 step'></form>`;
+      },
+      onCancel: function (data) {
+        // Show a cancel page, or return to cart
+        alert("Canceled!");
+      },
+      onError: function (err) {
+        // Show an error page here, when an error occurs
+        console.log("err: \n " + JSON.stringify(err, null, 4));
+        alert("Error!");
+      }
+    }).render('#paypal-button-container-server-2step');
+  </script>
+
   <br/>
   <div id="res"></div>
 
