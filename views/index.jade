@@ -138,9 +138,9 @@ div#paypalIndex.
     paypal.Buttons({
       style: {
         layout:  'vertical',
-        color:   'gold',
+        color:   'blue',
         shape:   'rect',
-        label:   'paypal'
+        label:   'checkout'
       },
       createOrder: function() {
         return fetch('/createorder', {
@@ -174,20 +174,21 @@ div#paypalIndex.
     }).render('#paypal-button-container-server');
   </script>
 
-  <h2>SERVER INTEGRATION (2 step)</h2>
+  <h2>SERVER INTEGRATION (2 steps)</h2>
   The button size needs set as its container style sheet.
   <div style="border: 1px solid gray; padding: 10px; width: 300px;">    
     <div id="paypal-button-container-server-2step"></div>
   </div>
 
   <script>
-    // Server integration
+    // Server integration (2 steps)
     paypal.Buttons({
       style: {
-        layout:  'vertical',
-        color:   'gold',
+        layout:  'horizontal',
+        color:   'silver',
         shape:   'rect',
-        label:   'paypal'
+        label:   'pay',
+        tagline: true
       },
       createOrder: function() {
         return fetch('/createorder', {
